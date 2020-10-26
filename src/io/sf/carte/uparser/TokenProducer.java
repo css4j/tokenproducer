@@ -49,6 +49,7 @@ public class TokenProducer {
 	public static final byte ERR_UNEXPECTED_END_QUOTED = 1;
 	public static final byte ERR_LASTCHAR_BACKSLASH = 2;
 	public static final byte ERR_UNEXPECTED_END_COMMENTED = 3;
+	public static final byte ERR_UNEXPECTED_CONTROL = 4;
 
 	/**
 	 * !
@@ -192,6 +193,7 @@ public class TokenProducer {
 	private boolean handleAllSeparators = true;
 	private boolean acceptNewlineEndingQuote = false;
 	private boolean acceptEofEndingQuoted = false;
+	private boolean externalControlHandling = true;
 
 	private final int characterIndexLimit;
 
@@ -468,6 +470,12 @@ public class TokenProducer {
 		 */
 		int previdx = 0;
 
+		private int prevlinelength = -1;
+
+		private int line = 1;
+
+		private boolean foundCp13andNotYet10or12 = false;
+
 		CommentManager commentManager;
 
 		AbstractSequenceParser() {
@@ -530,7 +538,7 @@ public class TokenProducer {
 			case Character.CONTROL:
 				checkPreviousWord();
 				prevtype = Character.CONTROL;
-				handler.control(rootIndex, cp);
+				handleControl(cp);
 				previdx = rootIndex + 1;
 				break;
 			case Character.START_PUNCTUATION:
@@ -657,6 +665,50 @@ public class TokenProducer {
 			handler.character(rootIndex, cp);
 		}
 
+		void handleControl(int codepoint) {
+			if (externalControlHandling) {
+				handler.control(rootIndex, codepoint);
+				return;
+			}
+			if (codepoint == 10) { // LF \n
+				handler.separator(rootIndex, 10);
+				if (!foundCp13andNotYet10or12) {
+					line++;
+					prevlinelength = rootIndex;
+				} else {
+					foundCp13andNotYet10or12 = false;
+					if (rootIndex - prevlinelength == 1) {
+						prevlinelength++;
+					} else {
+						handler.error(rootIndex, TokenProducer.ERR_UNEXPECTED_CONTROL,
+								"Unexpected: " + Character.toString(codepoint));
+					}
+				}
+			} else if (codepoint == 12) { // FF
+				handler.separator(rootIndex, 10);
+				if (!foundCp13andNotYet10or12) {
+					line++;
+				} else {
+					foundCp13andNotYet10or12 = false;
+					if (rootIndex - prevlinelength != 1) {
+
+					}
+				}
+				prevlinelength = rootIndex;
+			} else if (codepoint == 13) { // CR
+				line++;
+				prevlinelength = rootIndex;
+				foundCp13andNotYet10or12 = true;
+			} else if (codepoint == 9) { // TAB
+				handler.separator(rootIndex, 9);
+			} else if (codepoint < 0x80) {
+				handler.error(rootIndex, TokenProducer.ERR_UNEXPECTED_CONTROL,
+						"Unexpected: " + Character.toString(codepoint));
+			} else {
+				handler.control(rootIndex, codepoint);
+			}
+		}
+
 		/**
 		 * Handle a quoted string.
 		 * 
@@ -720,6 +772,11 @@ public class TokenProducer {
 			}
 
 			@Override
+			public void setExternalLocationHandling(boolean enable) {
+				TokenProducer.this.externalControlHandling = enable;
+			}
+
+			@Override
 			public TokenHandler getTokenHandler() {
 				return TokenProducer.this.handler;
 			}
@@ -727,6 +784,16 @@ public class TokenProducer {
 			@Override
 			public void setTokenHandler(TokenHandler handler) {
 				TokenProducer.this.handler = handler;
+			}
+
+			@Override
+			public void setLocationTo(LocatorAccess locator) {
+				locator.setLocation(line, rootIndex - prevlinelength);
+			}
+
+			@Override
+			public void setLocationTo(LocatorAccess locator, int index) {
+				locator.setLocation(line, index - prevlinelength);
 			}
 
 			/**
@@ -1166,8 +1233,8 @@ public class TokenProducer {
 							// not \ backslash
 							if (cp != 10 || !lastCpEscaped13) {
 								handler.error(idx, ERR_UNEXPECTED_END_QUOTED, buffer);
-								handler.control(idx, cp);
 								rootIndex = idx;
+								handleControl(cp);
 								if (!acceptNewlineEndingQuote) {
 									return null;
 								} else {
@@ -1440,7 +1507,7 @@ public class TokenProducer {
 							// not \ backslash
 							if (ncp != 10 || !lastCpEscaped13) {
 								handler.error(rootIndex, ERR_UNEXPECTED_END_QUOTED, buffer);
-								handler.control(rootIndex, ncp);
+								handleControl(ncp);
 								String s;
 								if (!acceptNewlineEndingQuote) {
 									s = null;

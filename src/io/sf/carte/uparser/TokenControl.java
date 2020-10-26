@@ -86,4 +86,42 @@ public interface TokenControl {
 	 */
 	void disableComments(int type);
 
+	/**
+	 * Enable/disable the external handling of locations.
+	 * <p>
+	 * If a binary stream is being processed, it should be enabled. It is enabled by
+	 * default.
+	 * </p>
+	 * 
+	 * @param enable if {@code false}, this parser will take care of handling
+	 *               CR/LF/FF control characters and location housekeeping.
+	 *               Otherwise, all control characters are sent to the handler
+	 *               without further processing.
+	 */
+	void setExternalLocationHandling(boolean enable);
+
+	/**
+	 * Set the current parsing location to the given locator.
+	 * <p>
+	 * Will only work correctly if {@code externalLocationHandling} is disabled.
+	 * </p>
+	 * 
+	 * @param locator the locator.
+	 * @see #setExternalLocationHandling(boolean)
+	 */
+	void setLocationTo(LocatorAccess locator);
+
+	/**
+	 * Set the parsing location given by {@code index} to the given locator.
+	 * <p>
+	 * Will only work correctly if {@code externalLocationHandling} is disabled and
+	 * the {@code index} points at the same line that the current parsing location.
+	 * </p>
+	 * 
+	 * @param locator the locator.
+	 * @param index   the index at which the location is to be set.
+	 * @see #setExternalLocationHandling(boolean)
+	 */
+	void setLocationTo(LocatorAccess locator, int index);
+
 }
