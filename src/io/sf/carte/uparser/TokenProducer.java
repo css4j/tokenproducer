@@ -193,7 +193,6 @@ public class TokenProducer {
 	private boolean handleAllSeparators = true;
 	private boolean acceptNewlineEndingQuote = false;
 	private boolean acceptEofEndingQuoted = false;
-	private boolean externalControlHandling = true;
 
 	private final int characterIndexLimit;
 
@@ -470,11 +469,13 @@ public class TokenProducer {
 		 */
 		int previdx = 0;
 
-		private int prevlinelength = -1;
+		int prevlinelength = -1;
 
-		private int line = 1;
+		int line = 1;
 
 		private boolean foundCp13andNotYet10or12 = false;
+
+		boolean externalControlHandling = true;
 
 		CommentManager commentManager;
 
@@ -691,7 +692,7 @@ public class TokenProducer {
 				} else {
 					foundCp13andNotYet10or12 = false;
 					if (rootIndex - prevlinelength != 1) {
-
+						line++;
 					}
 				}
 				prevlinelength = rootIndex;
@@ -773,7 +774,7 @@ public class TokenProducer {
 
 			@Override
 			public void setExternalLocationHandling(boolean enable) {
-				TokenProducer.this.externalControlHandling = enable;
+				AbstractSequenceParser.this.externalControlHandling = enable;
 			}
 
 			@Override
@@ -1394,7 +1395,7 @@ public class TokenProducer {
 				for (int idx = rootIndex; idx < len; idx++) {
 					int cp = string.codePointAt(idx);
 					if (cp == 10 || cp == 12 || cp == 13) {
-						if (cp != 10 || !lastCp13) {
+						if (externalControlHandling && (cp != 10 || !lastCp13)) {
 							handler.control(idx, cp);
 						}
 						lastCp13 = cp == 13;
@@ -1706,11 +1707,16 @@ public class TokenProducer {
 					// Check resource usage
 					checkResourceUsage();
 					// CR/LF/FF check
-					if (ncp == 10 || ncp == 12 || ncp == 13) {
-						if (ncp != 10 || !lastCp13) {
+					boolean isCp10;
+					if (isCp10 = ncp == 10 || ncp == 12 || ncp == 13) {
+						if (externalControlHandling && (ncp != 10 || !lastCp13)) {
 							handler.control(rootIndex - 1, ncp);
 						}
 						lastCp13 = ncp == 13;
+						if (isCp10) {
+							ReaderParser.this.line++;
+							ReaderParser.this.prevlinelength = rootIndex - 1;
+						}
 					} else {
 						lastCp13 = false;
 					}
@@ -1868,11 +1874,16 @@ public class TokenProducer {
 					// Check resource usage
 					checkResourceUsage();
 					// CR/LF/FF check
-					if (ncp == 10 || ncp == 12 || ncp == 13) {
-						if (ncp != 10 || !lastCp13) {
+					boolean isCp10;
+					if (isCp10 = ncp == 10 || ncp == 12 || ncp == 13) {
+						if (externalControlHandling && (ncp != 10 || !lastCp13)) {
 							handler.control(rootIndex - 1, ncp);
 						}
 						lastCp13 = ncp == 13;
+						if (isCp10) {
+							ReaderMultiCommentParser.this.line++;
+							ReaderMultiCommentParser.this.prevlinelength = rootIndex - 1;
+						}
 					} else {
 						lastCp13 = false;
 					}
