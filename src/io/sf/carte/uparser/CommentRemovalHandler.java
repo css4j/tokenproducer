@@ -35,7 +35,7 @@ public class CommentRemovalHandler implements TokenHandler {
 
 	@Override
 	public void separator(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override
@@ -53,32 +53,32 @@ public class CommentRemovalHandler implements TokenHandler {
 
 	@Override
 	public void quotedNewlineChar(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override
 	public void openGroup(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override
 	public void closeGroup(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override
 	public void character(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override
 	public void escaped(int index, int codePoint) {
-		buffer.append('\\').append(Character.toChars(codePoint));
+		buffer.append('\\').appendCodePoint(codePoint);
 	}
 
 	@Override
 	public void control(int index, int codePoint) {
-		buffer.append(Character.toChars(codePoint));
+		buffer.appendCodePoint(codePoint);
 	}
 
 	@Override

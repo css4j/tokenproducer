@@ -1226,7 +1226,7 @@ public class TokenProducer {
 						rootIndex = idx;
 						return buffer;
 					}
-					buffer.append(Character.toChars(qcp));
+					buffer.appendCodePoint(qcp);
 				} else if (Character.isISOControl(cp)) {
 					if (cp == 10 || cp == 12 || cp == 13) {
 						// LF/FF/CR character found
@@ -1254,11 +1254,11 @@ public class TokenProducer {
 						prevcp = cp;
 						continue;
 					} else {
-						buffer.append(Character.toChars(cp));
+						buffer.appendCodePoint(cp);
 						containsControls = true;
 					}
 				} else {
-					buffer.append(Character.toChars(cp));
+					buffer.appendCodePoint(cp);
 					if (cp == 92 && prevcp == 92) {
 						cp = 65;
 					}
@@ -1416,7 +1416,7 @@ public class TokenProducer {
 						}
 						endIndex = 0;
 					}
-					buffer.append(Character.toChars(cp));
+					buffer.appendCodePoint(cp);
 				}
 				rootIndex = len;
 				if (!closingEndsWith(10)) {
@@ -1500,7 +1500,7 @@ public class TokenProducer {
 						}
 					}
 					idx++;
-					buffer.append(Character.toChars(qcp));
+					buffer.appendCodePoint(qcp);
 				} else if (Character.isISOControl(ncp)) {
 					if (ncp == 10 || ncp == 12 || ncp == 13) {
 						// LF/FF/CR character found
@@ -1530,12 +1530,12 @@ public class TokenProducer {
 						prevcp = ncp;
 						continue;
 					} else {
-						buffer.append(Character.toChars(ncp));
+						buffer.appendCodePoint(ncp);
 						idx++;
 						containsControls = true;
 					}
 				} else {
-					buffer.append(Character.toChars(ncp));
+					buffer.appendCodePoint(ncp);
 					if (ncp == 92 && prevcp == 92) {
 						ncp = 65;
 					}
@@ -1599,7 +1599,7 @@ public class TokenProducer {
 				while ((cp = reader.read()) != -1) {
 					processCodePoint(cp, true);
 					if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-						buffer.append(Character.toChars(cp));
+						buffer.appendCodePoint(cp);
 					}
 					rootIndex += Character.charCount(cp);
 				}
@@ -1654,20 +1654,20 @@ public class TokenProducer {
 							int oldcp = unprocessed[j];
 							processCodePoint(oldcp, true);
 							if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-								buffer.append(Character.toChars(oldcp));
+								buffer.appendCodePoint(oldcp);
 							}
 						}
 						processCodePoint(cp, true);
 						unprocessedIdx = -1;
 						if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-							buffer.append(Character.toChars(cp));
+							buffer.appendCodePoint(cp);
 						}
 					} else if (ret == -2) {
 						for (int j = 0; j <= unprocessedIdx; j++) {
 							int oldcp = unprocessed[j];
 							processCodePoint(oldcp, true);
 							if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-								buffer.append(Character.toChars(oldcp));
+								buffer.appendCodePoint(oldcp);
 							}
 						}
 						unprocessedIdx = -1;
@@ -1676,7 +1676,7 @@ public class TokenProducer {
 							unprocessed[0] = cp;
 						}
 					} else if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-						buffer.append(Character.toChars(cp));
+						buffer.appendCodePoint(cp);
 					}
 					rootIndex += Character.charCount(cp);
 				}
@@ -1731,11 +1731,11 @@ public class TokenProducer {
 						// Verify whether current char is still commentEnd[i]
 						endIndex = commentEndIndex(endIndex, ncp);
 						if (endIndex == 0) {
-							buffer.append(Character.toChars(ncp));
+							buffer.appendCodePoint(ncp);
 						}
 						continue;
 					}
-					buffer.append(Character.toChars(ncp));
+					buffer.appendCodePoint(ncp);
 				}
 				if (!closingEndsWith(10)) {
 					error(rootIndex, ERR_UNEXPECTED_END_COMMENTED);
@@ -1748,11 +1748,11 @@ public class TokenProducer {
 				int endIndexm1 = endIndex - 1;
 				if (commentEnd[endIndexm1] != ncp || !repeatedEndCp(endIndexm1)) {
 					for (int j = 0; j < endIndex; j++) {
-						buffer.append(Character.toChars(commentEnd[j]));
+						buffer.appendCodePoint(commentEnd[j]);
 					}
 					endIndex = 0;
 				} else {
-					buffer.append(Character.toChars(commentEnd[0]));
+					buffer.appendCodePoint(commentEnd[0]);
 				}
 				return endIndex;
 			}
@@ -1819,13 +1819,13 @@ public class TokenProducer {
 							processCodePoint(oldcp, true);
 							rootIndex++;
 							if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-								buffer.append(Character.toChars(oldcp));
+								buffer.appendCodePoint(oldcp);
 							}
 						}
 						processCodePoint(cp, true);
 						unprocessedIdx = -1;
 						if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-							buffer.append(Character.toChars(cp));
+							buffer.appendCodePoint(cp);
 						}
 					} else if (ret == -2) {
 						rootIndex -= unprocessedIdx + 1;
@@ -1834,7 +1834,7 @@ public class TokenProducer {
 							processCodePoint(oldcp, true);
 							rootIndex++;
 							if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-								buffer.append(Character.toChars(oldcp));
+								buffer.appendCodePoint(oldcp);
 							}
 						}
 						unprocessedIdx = -1;
@@ -1843,7 +1843,7 @@ public class TokenProducer {
 							unprocessed[0] = cp;
 						}
 					} else if (prevtype == Character.LOWERCASE_LETTER || prevtype == Character.UPPERCASE_LETTER) {
-						buffer.append(Character.toChars(cp));
+						buffer.appendCodePoint(cp);
 					}
 					rootIndex += Character.charCount(cp);
 				}
@@ -1898,11 +1898,11 @@ public class TokenProducer {
 						// Verify whether current char is still closingCodepointAt(i - 1)
 						endIndex = commentEndIndex(endIndex, ncp);
 						if (endIndex == 0) {
-							buffer.append(Character.toChars(ncp));
+							buffer.appendCodePoint(ncp);
 						}
 						continue;
 					}
-					buffer.append(Character.toChars(ncp));
+					buffer.appendCodePoint(ncp);
 				}
 				if (!closingEndsWith(10)) {
 					error(rootIndex, ERR_UNEXPECTED_END_COMMENTED);
@@ -1915,11 +1915,11 @@ public class TokenProducer {
 				int endIndexm1 = endIndex - 1;
 				if (closingCodepointAt(endIndexm1) != ncp || !repeatedEndCp(endIndexm1)) {
 					for (int j = 0; j < endIndex; j++) {
-						buffer.append(Character.toChars(closingCodepointAt(j)));
+						buffer.appendCodePoint(closingCodepointAt(j));
 					}
 					endIndex = 0;
 				} else {
-					buffer.append(Character.toChars(closingCodepointAt(0)));
+					buffer.appendCodePoint(closingCodepointAt(0));
 				}
 				return endIndex;
 			}
