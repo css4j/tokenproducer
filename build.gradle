@@ -1,0 +1,13 @@
+plugins {
+	id 'css4j.java-conventions'
+}
+
+description = 'tokenproducer'
+
+publishing.publications.maven(MavenPublication).pom {
+	description = "Low-level parsing library"
+}
+
+java {
+	withJavadocJar()
+}
