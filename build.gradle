@@ -11,3 +11,7 @@ publishing.publications.maven(MavenPublication).pom {
 java {
 	withJavadocJar()
 }
+
+tasks.withType(PublishToMavenRepository).configureEach {
+	it.enabled = false
+}
