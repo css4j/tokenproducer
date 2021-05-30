@@ -18,5 +18,9 @@
 *.iws
 
 # Gradle
+**/build/
 /.gradle
-/build/
+/gradle
+/gradlew
+/gradlew.bat
+/buildSrc/.gradle

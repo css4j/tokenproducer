@@ -1,5 +1,5 @@
 plugins {
-	id 'css4j.java-conventions'
+	id 'carte.java-conventions'
 }
 
 description = 'tokenproducer'
@@ -10,7 +10,16 @@ publishing.publications.maven(MavenPublication).pom {
 
 version = '1.1.1'
 
+dependencies {
+	testImplementation "junit:junit:4.13.1"
+}
+
+subprojects {
+	modularity.mixedJavaRelease 7
+}
+
 java {
+	sourceCompatibility = JavaVersion.VERSION_11
 	withJavadocJar()
 }
 
