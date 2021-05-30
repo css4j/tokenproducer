@@ -8,6 +8,8 @@ publishing.publications.maven(MavenPublication).pom {
 	description = "Low-level parsing library"
 }
 
+version = '1.1.1'
+
 java {
 	withJavadocJar()
 }
