@@ -1442,6 +1442,7 @@ public class TokenProducerTest {
 		assertEquals(1, handler.errorCounter);
 	}
 
+	// A dash before the '-->' may confuse the parser
 	@Test
 	public void testParseReaderCommentCDOCDC() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
