@@ -39,6 +39,7 @@ sourceSets {
 group = 'io.sf.carte'
 
 java {
+	sourceCompatibility = JavaVersion.VERSION_11
 	withJavadocJar()
 	withSourcesJar()
 }
