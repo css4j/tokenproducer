@@ -14,10 +14,6 @@ dependencies {
 	testImplementation "junit:junit:4.13.1"
 }
 
-subprojects {
-	modularity.mixedJavaRelease 7
-}
-
 java {
 	sourceCompatibility = JavaVersion.VERSION_11
 	withJavadocJar()

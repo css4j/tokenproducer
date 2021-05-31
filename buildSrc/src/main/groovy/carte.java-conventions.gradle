@@ -9,6 +9,10 @@ repositories {
 	}
 }
 
+subprojects {
+	modularity.mixedJavaRelease 7
+}
+
 sourceSets {
 	main {
 		java {
