@@ -78,6 +78,20 @@ tasks.register('checkLegacyJava') {
 
 classes.finalizedBy checkLegacyJava
 
+configurations {
+	def jvmVersionAttribute = Attribute.of('org.gradle.jvm.version', Integer)
+	apiElements {
+		attributes {
+			attribute(jvmVersionAttribute, 8)
+		}
+	}
+	runtimeElements {
+		attributes {
+			attribute(jvmVersionAttribute, 8)
+		}
+	}
+}
+
 tasks.register('lineEndingConversion', CRLFConvert) {
 	description 'Convert LICENSE.txt to Windows line endings'
 	file "$rootDir/LICENSE.txt"
