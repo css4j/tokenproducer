@@ -15,8 +15,7 @@ To build this project, you need the following software installed:
 - The [Git version control system](https://git-scm.com/downloads) is required to
 obtain the sources. Any recent version should suffice.
 - A recent modular Java JDK (version 16 is being used to build). You can install it
-from your favourite package manager (for example [`scoop`](https://scoop.sh/) in
-Windows or [SDKMAN!](https://sdkman.io/) on Linux) or by downloading from
+from your favourite package manager or by downloading from
 [AdoptOpenJDK](https://adoptopenjdk.net/).
 
 
