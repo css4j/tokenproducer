@@ -16,7 +16,7 @@ To build this project, you need the following software installed:
 obtain the sources. Any recent version should suffice.
 - A recent modular Java JDK (version 16 is being used to build). You can install it
 from your favourite package manager or by downloading from
-[AdoptOpenJDK](https://adoptopenjdk.net/).
+[Adoptium](https://adoptium.net/).
 
 
 <br/>
