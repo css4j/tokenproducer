@@ -122,6 +122,7 @@ tasks.withType(AbstractArchiveTask).configureEach {
 	preserveFileTimestamps = false
 	reproducibleFileOrder = true
 	// Copy license file
+	dependsOn lineEndingConversion
 	from ('LICENSE.txt') {
 		into 'META-INF'
 	}
