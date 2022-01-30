@@ -2133,7 +2133,7 @@ public class TokenProducerTest {
 
 	}
 
-	class DisableCommentsTokenHandler extends MyTokenHandler {
+	static class DisableCommentsTokenHandler extends MyTokenHandler {
 
 		@Override
 		public void tokenStart(TokenControl control) {
