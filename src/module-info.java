@@ -8,6 +8,10 @@
  * https://css4j.github.io/LICENSE.txt
  *
  */
+
+/**
+ * A small event parser.
+ */
 module io.sf.carte.tokenproducer {
 	exports io.sf.carte.uparser;
 }
