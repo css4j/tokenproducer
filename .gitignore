@@ -20,3 +20,5 @@
 **/build/
 /.gradle
 /buildSrc/.gradle
+
+/CHANGES.txt
