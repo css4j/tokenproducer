@@ -2008,17 +2008,8 @@ public class TokenProducerTest {
 	}
 
 	private static Reader loadfromClasspath(final String filename) {
-		InputStream is = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<InputStream>() {
-			@Override
-			public InputStream run() {
-				return this.getClass().getResourceAsStream(filename);
-			}
-		});
-		Reader re = null;
-		if (is != null) {
-			re = new InputStreamReader(is, StandardCharsets.UTF_8);
-		}
-		return re;
+		InputStream is = TokenProducerTest.class.getResourceAsStream(filename);
+		return is != null ? new InputStreamReader(is, StandardCharsets.UTF_8) : null;
 	}
 
 	private static class MyTokenHandler implements TokenHandler {
