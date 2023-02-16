@@ -1650,7 +1650,7 @@ public class TokenProducerTest {
 		assertEquals("content", handler.words.get(0));
 		assertEquals("'foo'", handler.words.get(1));
 		assertEquals(":", handler.punctbuffer.toString());
-		assertEquals(1, handler.errorCounter);
+		assertEquals(0, handler.errorCounter);
 	}
 
 	@Test

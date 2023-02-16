@@ -1264,9 +1264,15 @@ public class TokenProducer {
 				lastCpEscaped13 = false;
 			}
 			rootIndex = len;
-			error(initial, ERR_UNEXPECTED_END_QUOTED);
+
 			if (acceptEofEndingQuoted) {
-				return buffer;
+				if (!containsControls) {
+					return buffer;
+				} else {
+					handler.quotedWithControl(rootIndex, buffer, qcp);
+				}
+			} else {
+				error(initial, ERR_UNEXPECTED_END_QUOTED);
 			}
 			return null;
 		}
@@ -1541,9 +1547,15 @@ public class TokenProducer {
 				prevcp = ncp;
 				lastCpEscaped13 = false;
 			}
-			error(rootIndex, ERR_UNEXPECTED_END_QUOTED);
+
 			if (acceptEofEndingQuoted) {
-				return buffer;
+				if (!containsControls) {
+					return buffer;
+				} else {
+					handler.quotedWithControl(rootIndex, buffer, qcp);
+				}
+			} else {
+				error(rootIndex, ERR_UNEXPECTED_END_QUOTED);
 			}
 			return null;
 		}
