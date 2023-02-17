@@ -43,3 +43,7 @@ Before deploying to a remote Maven repository, please read the
 to learn which properties you need to set (like `mavenReleaseRepoUrl`or
 `mavenRepoUsername`), either at the [command line](https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties)
 (`-P` option) or your `GRADLE_USER_HOME/gradle.properties` file.
+
+### Fuzzing
+
+Use `./gradlew fuzzer` to run a [Jazzer](https://github.com/CodeIntelligenceTesting/jazzer)-based fuzzer.

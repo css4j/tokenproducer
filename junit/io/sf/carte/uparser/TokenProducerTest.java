@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +29,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParse() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (display: list-item)", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -45,7 +44,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParse2() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (display: list-item)-", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -60,7 +59,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParse2Reader() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("(display: table-cell) and (display: list-item)-"), "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -75,7 +74,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParse2ReaderMultiComment() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("(display: table-cell) and (display: list-item)-");
 		String[] opening = { "/*", "<!--" };
@@ -93,7 +92,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSizeLimit() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords, 20);
 		try {
 			tp.parse(new StringReader("(display: table-cell) and (display: list-item)"), "<!--", "-->");
@@ -105,7 +104,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSizeLimitSingleWord() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords, 20);
 		try {
 			tp.parse(new StringReader("aaaaaaaaaaaaaaaaaaaaaaaaaaa"), "<!--", "-->");
@@ -117,7 +116,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSizeLimitComment() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords, 20);
 		try {
 			tp.parse(new StringReader("<!ELEMENT> <!-- comment -->"), "<!--", "-->");
@@ -129,7 +128,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSizeLimitQuoted() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords, 20);
 		try {
 			tp.parse(new StringReader("content: 'foo                  bar'"), "<!--", "-->");
@@ -141,7 +140,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNL() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("only\nscreen", "/*", "*/");
 		assertEquals("only", handler.words.get(0));
@@ -154,7 +153,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -166,7 +165,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -177,7 +176,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -191,7 +190,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimpleNoComment() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f");
 		assertEquals(1, handler.words.size());
@@ -203,7 +202,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimpleNoComment() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f"));
 		assertEquals(1, handler.words.size());
@@ -215,7 +214,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple2() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("@f", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -226,7 +225,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("@f"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -237,7 +236,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -250,7 +249,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple2NoComment() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("@f");
 		assertEquals(1, handler.words.size());
@@ -261,7 +260,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("@f"));
 		assertEquals(1, handler.words.size());
@@ -272,7 +271,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple3() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f@", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -283,7 +282,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple3() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f@"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -294,7 +293,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple3() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f@");
 		assertEquals(1, handler.words.size());
@@ -305,7 +304,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple3() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f@"));
 		assertEquals(1, handler.words.size());
@@ -316,7 +315,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple4() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f g", "/*", "*/");
 		assertEquals(2, handler.words.size());
@@ -329,7 +328,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple4() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f g");
 		assertEquals(2, handler.words.size());
@@ -342,7 +341,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple4() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f g"));
 		assertEquals(2, handler.words.size());
@@ -355,7 +354,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple5() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f:g", "/*", "*/");
 		assertEquals(2, handler.words.size());
@@ -368,7 +367,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple5() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f:g");
 		assertEquals(2, handler.words.size());
@@ -381,7 +380,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple5() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f:g"));
 		assertEquals(2, handler.words.size());
@@ -394,7 +393,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple6() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f-g:", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -406,7 +405,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple7() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f/", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -419,7 +418,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple7() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f/"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -432,7 +431,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple7() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("f/");
 		String[] opening = { "/*", "<!--" };
@@ -448,7 +447,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple8() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("-/", "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -459,7 +458,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple8() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("-/"), "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -470,7 +469,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple8() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("-/");
 		String[] opening = { "/*", "<!--" };
@@ -484,7 +483,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple8() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("-/");
 		assertEquals(0, handler.words.size());
@@ -495,7 +494,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple9() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("-/**/", "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -507,7 +506,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple9() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("-/**/"), "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -519,7 +518,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple9() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("-/**/");
 		String[] opening = { "/*", "<!--" };
@@ -534,7 +533,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple10() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("/", "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -546,7 +545,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple10() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/"), "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -558,7 +557,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple10() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("/");
 		String[] opening = { "/*", "<!--" };
@@ -573,7 +572,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple10() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("/");
 		assertEquals(0, handler.words.size());
@@ -585,7 +584,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple10() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/"));
 		assertEquals(0, handler.words.size());
@@ -597,7 +596,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple11() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("/*", "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -609,7 +608,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple11() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/*"), "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -621,7 +620,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple11() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("/*");
 		String[] opening = { "/*", "<!--" };
@@ -636,7 +635,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple12() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("<!-", "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -648,7 +647,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple12() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("<!-"), "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -660,7 +659,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple12() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("<!-");
 		String[] opening = { "/*", "<!--" };
@@ -675,7 +674,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple13() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f-", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -687,7 +686,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple13() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f-"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -699,7 +698,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple13() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -713,7 +712,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple13() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("f-");
 		assertEquals(1, handler.words.size());
@@ -725,7 +724,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple13() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f-"));
 		assertEquals(1, handler.words.size());
@@ -737,7 +736,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple14() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("-", "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -749,7 +748,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple14() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("-"), "/*", "*/");
 		assertEquals(0, handler.words.size());
@@ -761,7 +760,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple14() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -775,7 +774,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple14() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("-");
 		assertEquals(0, handler.words.size());
@@ -787,7 +786,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple14() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("-"));
 		assertEquals(0, handler.words.size());
@@ -799,7 +798,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSimple15() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("\\64  ", "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -814,7 +813,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple15() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("\\64  "), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -829,7 +828,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentSimple15() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -846,7 +845,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseNoCommentSimple15() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("\\64  ");
 		assertEquals(1, handler.words.size());
@@ -861,7 +860,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNoCommentSimple15() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("\\64  "));
 		assertEquals(1, handler.words.size());
@@ -876,7 +875,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseComment() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("/*!rtl:ignore*/-o-foo:-o-bar;/*!rtl:ignore*/foo:bar/*!rtl:ignore*/", "/*", "*/");
 		assertEquals(4, handler.words.size());
@@ -898,7 +897,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseCommentNL() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("/*!rtl:ignore\n*/-o-foo:-o-bar;/*!rtl:ignore\n*/foo:bar/*!rtl:ignore\n*/", "/*", "*/");
 		assertEquals(4, handler.words.size());
@@ -921,7 +920,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseCommentCDO() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("<!--!rtl:ignore-->-o-foo:-o-bar;<!--!rtl:ignore-->foo:bar<!--!rtl:ignore-->", "<!--", "-->");
 		assertEquals(4, handler.words.size());
@@ -939,7 +938,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderComment() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/*!rtl:ignore*/-o-foo:-o-bar;/*!rtl:ignore*/foo:bar/*!rtl:ignore*/"), "/*", "*/");
 		assertEquals(4, handler.words.size());
@@ -961,7 +960,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderCommentNL() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/*!rtl:ignore\n*/-o-foo:-o-bar;/*!rtl:ignore\n*/foo:bar/*!rtl:ignore\n*/"), "/*", "*/");
 		assertEquals(4, handler.words.size());
@@ -985,7 +984,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderCommentNL2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("/*!rtl:ignore\n*/\n-o-foo:-o-bar;/*!rtl:ignore\n*/\nfoo:bar/*!rtl:ignore\n*/\n"), "/*", "*/");
 		assertEquals(4, handler.words.size());
@@ -1008,7 +1007,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderFileComment() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		Reader re = loadTestReader("comments.txt");
 		tp.parse(re, "/*", "*/");
@@ -1051,7 +1050,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple5() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f:g"), "/*", "*/");
 		assertEquals(2, handler.words.size());
@@ -1063,7 +1062,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderSimple6() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("f-g:"), "/*", "*/");
 		assertEquals(1, handler.words.size());
@@ -1074,7 +1073,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseHyphen() {
 		int[] allowInWords = { 37, 45, 46 }; // %-.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (width: calc(100% - 2em))", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -1093,7 +1092,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseAllowedInComment() {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("<!ELEMENT> <!-- comment -->", "<!--", "-->");
 		assertEquals(1, handler.words.size());
@@ -1108,7 +1107,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderAllowedInComment() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("<!ELEMENT> <!-- comment -->"), "<!--", "-->");
 		assertEquals(1, handler.words.size());
@@ -1123,7 +1122,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiAllowedInComment() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1140,7 +1139,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseAllowedBeforeComment() {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("<<!-- comment --><", "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -1154,7 +1153,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseAllowedBeforeComment2() {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("!<!-- comment -->!", "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -1168,7 +1167,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderAllowedBeforeComment() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("<<!-- comment --><"), "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -1182,7 +1181,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderAllowedBeforeComment2() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("!<!-- comment -->!"), "<!--", "-->");
 		assertEquals(0, handler.words.size());
@@ -1196,7 +1195,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentAllowedBeforeComment() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1212,7 +1211,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderMultiCommentAllowedBeforeComment2() throws IOException {
 		int[] allowInWords = { 33, 60 }; // <!
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1228,7 +1227,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotes() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (content: 'foo bar')", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -1247,7 +1246,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesAndComment() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) /* This is a comment */ and (content: 'foo bar')",
 				"/*", "*/");
@@ -1269,7 +1268,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesAndCommentCDO() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) <!-- This is a comment --> and (content: 'foo bar')",
 				"<!--", "-->");
@@ -1291,7 +1290,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotesAndComment() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("(display: table-cell) /* This is a comment */ and (content: 'foo bar')"), "/*",
 				"*/");
@@ -1310,7 +1309,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotesAndCommentCDO() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(new StringReader("(display: table-cell) <!-- This is a comment --> and (content: 'foo bar')  "), "<!--",
 				"-->");
@@ -1332,7 +1331,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) /* This is a comment */ and\n//This too\n (content: 'foo bar')");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "//" };
 		String[] closing = { "*/", "\n" };
@@ -1359,7 +1358,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) /* This is a comment */ and (content: 'foo bar')\n//This too\n");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "//" };
 		String[] closing = { "*/", "\n" };
@@ -1386,7 +1385,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) /* This is a comment */ and (content: 'foo bar')\n//This too");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "//" };
 		String[] closing = { "*/", "\n" };
@@ -1412,7 +1411,7 @@ public class TokenProducerTest {
 	public void testParseMultiCommentEOLBad() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("(display: table-cell) /* This begins like a comment");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "//" };
 		String[] closing = { "*/", "\n" };
@@ -1430,7 +1429,7 @@ public class TokenProducerTest {
 	public void testParseCommentEOLBad() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("(display: table-cell) /* This begins like a comment");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(re, "/*", "*/");
 		assertEquals(" This begins like a comment", handler.comments.get(0));
@@ -1448,7 +1447,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) <!--- This is a --comment ---> and (content: 'foo bar')\n<!--This too-->");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String opening = "<!--";
 		String closing = "-->";
@@ -1476,7 +1475,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) <!--- This is a --comment ----> and (content: 'foo bar')\n<!--This too-->");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String opening = "<!--";
 		String closing = "-->";
@@ -1504,7 +1503,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) <!--- This is a --comment ---> and (content: 'foo bar')\n/*This too*/");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1532,7 +1531,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) <!--- This is a \n--comment ---> and (content: 'foo bar')/*\nThis\n too*/");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1560,7 +1559,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) <!--- This is a --comment ----> and (content: 'foo bar')\n/*This too*/");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "<!--" };
 		String[] closing = { "*/", "-->" };
@@ -1584,7 +1583,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesEscaped() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (content: 'foo\\' bar')", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -1600,7 +1599,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesUnescapedNL() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: 'foo\nbar", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1613,7 +1612,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesUnescapedNLAccept() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.setAcceptNewlineEndingQuote(true);
 		tp.parse("content: 'foo\nbar", "/*", "*/");
@@ -1629,7 +1628,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesUnescapedNLEOF() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: 'foo\n", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1643,7 +1642,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesUnescapedNLEOFAccept() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.setAcceptEofEndingQuoted(true);
 		tp.parse("content: 'foo", "/*", "*/");
@@ -1656,7 +1655,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesEscapedControl() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (content: 'foo\\\n bar')", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -1673,7 +1672,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotesEscapedControlCRLF() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("(display: table-cell) and (content: 'foo\\\r\n bar')", "/*", "*/");
 		assertEquals("display", handler.words.get(0));
@@ -1690,7 +1689,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReader() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("(display: table-cell) and (display: list-item)");
 		tp.parse(re, "/*", "*/");
@@ -1709,7 +1708,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderNL() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("only\nscreen");
 		tp.parse(re, "/*", "*/");
@@ -1724,7 +1723,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseEscaped() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \\f435;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1738,7 +1737,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseEscapedBackslash() {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \\\\f435;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1752,7 +1751,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderHyphen() throws IOException {
 		int[] allowInWords = { 45, 37, 46 }; // -%.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("(display: table-cell) and (width: calc(100% - 2em))");
 		tp.parse(re, "/*", "*/");
@@ -1771,7 +1770,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotes() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("(display: table-cell) and (content: 'foo bar')");
 		tp.parse(re, "/*", "*/");
@@ -1791,7 +1790,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotesEscaped() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("(display: table-cell) and (content: 'foo\\' bar')");
 		tp.parse(re, "/*", "*/");
@@ -1811,7 +1810,7 @@ public class TokenProducerTest {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader(
 				"(display: table-cell) /* no-comment */ and (content: 'foo bar')\n//neither\n");
-		MyTokenHandler handler = new DisableCommentsTokenHandler();
+		TestTokenHandler handler = new DisableCommentsTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		String[] opening = { "/*", "//" };
 		String[] closing = { "*/", "\n" };
@@ -1837,7 +1836,7 @@ public class TokenProducerTest {
 	public void testParseReaderQuotesUnescapedNL() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("content: 'foo\nbar");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(re, "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1851,7 +1850,7 @@ public class TokenProducerTest {
 	public void testParseReaderQuotesUnescapedNLAccept() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("content: 'foo\nbar");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.setAcceptNewlineEndingQuote(true);
 		tp.parse(re, "/*", "*/");
@@ -1866,7 +1865,7 @@ public class TokenProducerTest {
 	public void testParseReaderQuotesUnescapedNLEOF() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("content: 'foo\n");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse(re, "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1880,7 +1879,7 @@ public class TokenProducerTest {
 	public void testParseReaderQuotesUnescapedNLEOFAccept() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
 		StringReader re = new StringReader("content: 'foo");
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.setAcceptEofEndingQuoted(true);
 		tp.parse(re, "/*", "*/");
@@ -1892,7 +1891,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseBackslash() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \\\\", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1903,7 +1902,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseBackslash2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \\\\;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1915,7 +1914,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotedBackslash() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: '\\'", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1926,7 +1925,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseQuotedBackslash2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: '\\\\'", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1937,7 +1936,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderBackslash() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("content: \\\\");
 		tp.parse(re, "/*", "*/");
@@ -1949,7 +1948,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotedBackslash() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("content: '\\'");
 		tp.parse(re, "/*", "*/");
@@ -1961,7 +1960,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseReaderQuotedBackslash2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		StringReader re = new StringReader("content: '\\\\'");
 		tp.parse(re, "/*", "*/");
@@ -1973,7 +1972,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSurrogate() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: 🚧;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1984,7 +1983,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSurrogate2() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \ud83d\udd0a;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -1995,7 +1994,7 @@ public class TokenProducerTest {
 	@Test
 	public void testParseSurrogate3() throws IOException {
 		int[] allowInWords = { 45, 46 }; // -.
-		MyTokenHandler handler = new MyTokenHandler();
+		TestTokenHandler handler = new TestTokenHandler();
 		TokenProducer tp = new TokenProducer(handler, allowInWords);
 		tp.parse("content: \ud950;", "/*", "*/");
 		assertEquals("content", handler.words.get(0));
@@ -2012,119 +2011,7 @@ public class TokenProducerTest {
 		return is != null ? new InputStreamReader(is, StandardCharsets.UTF_8) : null;
 	}
 
-	private static class MyTokenHandler implements TokenHandler {
-
-		TokenControl control = null;
-		LinkedList<String> words = new LinkedList<String>();
-		LinkedList<String> escaped = new LinkedList<String>();
-		LinkedList<String> comments = new LinkedList<String>();
-		StringBuilder punctbuffer = new StringBuilder();
-		StringBuilder sepbuffer = new StringBuilder();
-		StringBuilder openbuffer = new StringBuilder();
-		StringBuilder closebuffer = new StringBuilder();
-		int control10 = 0;
-		int control13 = 0;
-		int errorCounter = 0;
-		int lastWordIndex = -1;
-		int lastQuotedIndex = -1;
-		int lastCharacterIndex = -1;
-		int lastCommentIndex = -1;
-		int lastControlIndex = -1;
-
-		@Override
-		public void word(int index, CharSequence word) {
-			words.add(word.toString());
-			lastWordIndex = index;
-		}
-
-		@Override
-		public void separator(int index, int cp) {
-			sepbuffer.append(' ').append(index);
-		}
-
-		@Override
-		public void openGroup(int index, int codepoint) {
-			char[] chars = Character.toChars(codepoint);
-			openbuffer.append(chars);
-			punctbuffer.append(chars);
-		}
-
-		@Override
-		public void closeGroup(int index, int codepoint) {
-			char[] chars = Character.toChars(codepoint);
-			closebuffer.append(chars);
-			punctbuffer.append(chars);
-		}
-
-		@Override
-		public void character(int index, int codepoint) {
-			char[] chars = Character.toChars(codepoint);
-			punctbuffer.append(chars);
-			lastCharacterIndex = index;
-		}
-
-		@Override
-		public void quoted(int index, CharSequence quoted, int quoteCp) {
-			char c = (char) quoteCp;
-			StringBuilder buf = new StringBuilder(quoted.length() + 2);
-			buf.append(c).append(quoted).append(c);
-			words.add(buf.toString());
-			lastQuotedIndex = index;
-		}
-
-		@Override
-		public void quotedWithControl(int index, CharSequence quoted, int quoteCp) {
-			quoted(index, quoted, quoteCp);
-			lastQuotedIndex = index;
-		}
-
-		@Override
-		public void escaped(int index, int codepoint) {
-			escaped.add(new String(Character.toChars(codepoint)));
-		}
-
-		@Override
-		public void control(int index, int codepoint) {
-			if (codepoint == 10) {
-				control10++;
-			} else if (codepoint == 13) {
-				control13++;
-			}
-			lastControlIndex = index;
-		}
-
-		@Override
-		public void quotedNewlineChar(int index, int codepoint) {
-			if (codepoint == 10) {
-				control10++;
-			} else if (codepoint == 13) {
-				control13++;
-			}
-		}
-
-		@Override
-		public void commented(int index, int commentType, String comment) {
-			comments.add(comment);
-			lastCommentIndex = index;
-		}
-
-		@Override
-		public void endOfStream(int len) {
-		}
-
-		@Override
-		public void error(int index, byte errCode, CharSequence context) {
-			errorCounter++;
-		}
-
-		@Override
-		public void tokenStart(TokenControl control) {
-			this.control = control;
-		}
-
-	}
-
-	static class DisableCommentsTokenHandler extends MyTokenHandler {
+	static class DisableCommentsTokenHandler extends TestTokenHandler {
 
 		@Override
 		public void tokenStart(TokenControl control) {

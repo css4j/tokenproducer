@@ -34,6 +34,8 @@ sourceSets {
 
 dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	// Jazzzer
+	testImplementation 'com.code-intelligence:jazzer-junit:0.15.0'
 }
 
 repositories {
@@ -49,7 +51,9 @@ java {
 }
 
 test {
-	useJUnitPlatform()
+	useJUnitPlatform() {
+		excludeTags 'Fuzz'
+	}
 }
 
 tasks.compileJava {
@@ -92,6 +96,14 @@ tasks.register('checkLegacyJava') {
 }
 
 classes.finalizedBy checkLegacyJava
+
+tasks.register('fuzzer', Test) {
+	environment "JAZZER_FUZZ", "1"
+
+	useJUnitPlatform() {
+		includeTags 'Fuzz'
+	}
+}
 
 tasks.register('lineEndingConvCopy', CRLFConvertCopy) {
 	description 'Convert LICENSE.txt to Windows line endings'
