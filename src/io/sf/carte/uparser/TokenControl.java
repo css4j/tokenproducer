@@ -11,6 +11,8 @@
 
 package io.sf.carte.uparser;
 
+import java.io.IOException;
+
 /**
  * Offers methods to control the parsing process by the handler.
  */
@@ -45,6 +47,16 @@ public interface TokenControl {
 	 *            true to process quoted strings that ends with an EOF, <code>false</code> otherwise.
 	 */
 	void setAcceptEofEndingQuoted(boolean accept);
+
+	/**
+	 * Gives the next code point in the stream, bypassing the general processing for
+	 * that one.
+	 * 
+	 * @return the next code point, or -1 if the end of the stream was reached.
+	 * 
+	 * @throws IOException if an I/O problem occurs.
+	 */
+	int skipNextCodepoint() throws IOException;
 
 	/**
 	 * Get the current {@code TokenHandler}.

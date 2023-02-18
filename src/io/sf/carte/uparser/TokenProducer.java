@@ -329,6 +329,12 @@ public class TokenProducer {
 		this.acceptEofEndingQuoted = accept;
 	}
 
+	/**
+	 * Tokenize a string, without any comment handling.
+	 * 
+	 * @param string the string to parse.
+	 * @throws NullPointerException if the string is {@code null}.
+	 */
 	public void parse(String string) {
 		if (string == null) {
 			throw new NullPointerException("Null argument");
@@ -340,6 +346,19 @@ public class TokenProducer {
 		}
 	}
 
+	/**
+	 * Tokenize a string, accounting for the given comment syntax.
+	 * 
+	 * @param string       the string to parse.
+	 * @param commentOpen  the token that opens a comment, for example {@code /*}.
+	 *                     It is not allowed to repeat the same character at the
+	 *                     beginning of the token. For example, <code>&lt;!--</code>
+	 *                     is a valid token but <code>&lt;&lt;--</code> would not.
+	 * @param commentClose the token closing a comment, for example
+	 *                     <code>*&#x2f;</code>
+	 * 
+	 * @throws NullPointerException if any of the string arguments are {@code null}.
+	 */
 	public void parse(String string, String commentOpen, String commentClose) {
 		if (string == null) {
 			throw new NullPointerException("Null argument");
@@ -351,6 +370,16 @@ public class TokenProducer {
 		}
 	}
 
+	/**
+	 * Tokenize the contents of the given {@code Reader} without any comment
+	 * handling.
+	 * <p>
+	 * A buffer with an initial default capacity of 256 will be used.
+	 * </p>
+	 * 
+	 * @param reader the {@code Reader} whose contents are to be parsed.
+	 * @throws IOException if an I/O problem occurs with the {@code Reader}.
+	 */
 	public void parse(Reader reader) throws IOException {
 		if (reader == null) {
 			throw new NullPointerException("Null character stream");
@@ -359,6 +388,14 @@ public class TokenProducer {
 		sp.parse();
 	}
 
+	/**
+	 * Tokenize the contents of a {@code Reader} without any comment handling, using
+	 * a buffer with the given initial capacity.
+	 * 
+	 * @param reader         the {@code Reader} whose contents are to be parsed.
+	 * @param bufferCapacity the initial buffer capacity.
+	 * @throws IOException if an I/O problem occurs with the {@code Reader}.
+	 */
 	public void parse(Reader reader, int bufferCapacity) throws IOException {
 		if (reader == null) {
 			throw new NullPointerException("Null character stream");
@@ -368,7 +405,7 @@ public class TokenProducer {
 	}
 
 	/**
-	 * Parse the given reader, with a single comment layout.
+	 * Tokenize the given reader, with a single comment layout.
 	 * 
 	 * @param reader
 	 *            the reader to parse.
@@ -379,7 +416,9 @@ public class TokenProducer {
 	 * @param commentClose
 	 *            the token that closes a comment.
 	 * @throws IOException
-	 *             if an I/O problem was found parsing the reader.
+	 *            if an I/O problem occurs.
+	 * @throws NullPointerException
+	 *            if any of the string arguments are {@code null}.
 	 */
 	public void parse(Reader reader, String commentOpen, String commentClose) throws IOException {
 		if (reader == null) {
@@ -390,19 +429,19 @@ public class TokenProducer {
 	}
 
 	/**
-	 * Parse the given reader, with multiple comment layouts.
+	 * Tokenize the given reader, with multiple comment layouts.
 	 * 
-	 * @param reader
-	 *            the reader to parse.
-	 * @param opening
-	 *            the array of tokens that open a comment. It is not allowed to repeat the
-	 *            same character at the beginning of a token. For example,
-	 *            <code>&lt;!--</code> is a valid token but <code>&lt;&lt;--</code> would not.
-	 * @param closing
-	 *            the array of tokens that close the comment opened with the
-	 *            <code>opening</code> at the same index.
-	 * @throws IOException
-	 *             if an I/O problem was found parsing the reader.
+	 * @param reader  the reader to parse.
+	 * @param opening the array of tokens that open a comment. It is not allowed to
+	 *                repeat the same character at the beginning of a token. For
+	 *                example, <code>&lt;!--</code> is a valid token but
+	 *                <code>&lt;&lt;--</code> would not.
+	 * @param closing the array of tokens that close the comment opened with the
+	 *                <code>opening</code> at the same index.
+	 * @throws IOException              if an I/O problem was found parsing the
+	 *                                  reader.
+	 * @throws IllegalArgumentException if the opening and closing arrays do not
+	 *                                  have the same length.
 	 */
 	public void parseMultiComment(Reader reader, String[] opening, String[] closing) throws IOException {
 		if (reader == null) {
@@ -779,6 +818,11 @@ public class TokenProducer {
 			}
 
 			@Override
+			public int skipNextCodepoint() throws IOException {
+				return AbstractSequenceParser.this.nextCodepoint();
+			}
+
+			@Override
 			public TokenHandler getTokenHandler() {
 				return TokenProducer.this.handler;
 			}
@@ -1010,6 +1054,9 @@ public class TokenProducer {
 
 			MultiCommentManager(String[] start, String[] end) {
 				super();
+				if (start == null || end == null) {
+					throw new NullPointerException("Null comment token arrays.");
+				}
 				setCommentDelimiters(start, end);
 			}
 
@@ -1473,6 +1520,7 @@ public class TokenProducer {
 		 * Gives the next code point in the stream.
 		 * 
 		 * @return the next code point, or -1 if the end of the stream was reached.
+		 * @throws IOException if an I/O problem occurs.
 		 */
 		@Override
 		protected int nextCodepoint() throws IOException {
