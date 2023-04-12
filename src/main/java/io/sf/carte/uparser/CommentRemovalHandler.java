@@ -57,13 +57,33 @@ public class CommentRemovalHandler implements TokenHandler {
 	}
 
 	@Override
-	public void openGroup(int index, int codePoint) {
-		buffer.appendCodePoint(codePoint);
+	public void leftParenthesis(int index) {
+		buffer.append('(');
 	}
 
 	@Override
-	public void closeGroup(int index, int codePoint) {
-		buffer.appendCodePoint(codePoint);
+	public void leftSquareBracket(int index) {
+		buffer.append('[');
+	}
+
+	@Override
+	public void leftCurlyBracket(int index) {
+		buffer.append('{');
+	}
+
+	@Override
+	public void rightParenthesis(int index) {
+		buffer.append(')');
+	}
+
+	@Override
+	public void rightSquareBracket(int index) {
+		buffer.append(']');
+	}
+
+	@Override
+	public void rightCurlyBracket(int index) {
+		buffer.append('}');
 	}
 
 	@Override

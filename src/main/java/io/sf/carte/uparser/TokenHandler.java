@@ -81,24 +81,80 @@ public interface TokenHandler {
 	void quotedNewlineChar(int index, int codePoint);
 
 	/**
-	 * Called when one of these codepoints is found: (, [, {
+	 * Called when the {@code (} codepoint is found.
 	 *
 	 * @param index
 	 *            the index at which the codepoint was found.
-	 * @param codePoint
-	 *            the found codepoint.
 	 */
-	void openGroup(int index, int codePoint);
+	void leftParenthesis(int index);
 
 	/**
-	 * Called when one of these codepoints is found: ), ], }
+	 * Called when the {@code [} codepoint is found.
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 */
+	void leftSquareBracket(int index);
+
+	/**
+	 * Called when the <code>{</code> codepoint is found.
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 */
+	void leftCurlyBracket(int index);
+
+	/**
+	 * Called when the {@code )} codepoint is found.
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 */
+	void rightParenthesis(int index);
+
+	/**
+	 * Called when the {@code ]} codepoint is found.
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 */
+	void rightSquareBracket(int index);
+
+	/**
+	 * Called when the <code>}</code> codepoint is found.
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 */
+	void rightCurlyBracket(int index);
+
+	/**
+	 * Called when start punctuation (Ps) codepoints are found (except characters
+	 * handled by {@link #leftCurlyBracket(int)}, {@link #leftParenthesis(int)} and
+	 * {@link #leftSquareBracket(int)}).
 	 *
 	 * @param index
 	 *            the index at which the codepoint was found.
 	 * @param codePoint
 	 *            the found codepoint.
 	 */
-	void closeGroup(int index, int codePoint);
+	default void startPunctuation(int index, int codePoint) {
+		character(index, codePoint);
+	}
+
+	/**
+	 * Called when end punctuation (Pe) codepoints are found (except characters
+	 * handled by {@link #rightCurlyBracket(int)}, {@link #rightParenthesis(int)}
+	 * and {@link #rightSquareBracket(int)}).
+	 *
+	 * @param index
+	 *            the index at which the codepoint was found.
+	 * @param codePoint
+	 *            the found codepoint.
+	 */
+	default void endPunctuation(int index, int codePoint) {
+		character(index, codePoint);
+	}
 
 	/**
 	 * Other characters including punctuation (excluding connector punctuation) and symbols

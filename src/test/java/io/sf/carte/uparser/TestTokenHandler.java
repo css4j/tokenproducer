@@ -44,17 +44,39 @@ class TestTokenHandler implements TokenHandler {
 	}
 
 	@Override
-	public void openGroup(int index, int codepoint) {
-		char[] chars = Character.toChars(codepoint);
-		openbuffer.append(chars);
-		punctbuffer.append(chars);
+	public void leftParenthesis(int index) {
+		openbuffer.append('(');
+		punctbuffer.append('(');
 	}
 
 	@Override
-	public void closeGroup(int index, int codepoint) {
-		char[] chars = Character.toChars(codepoint);
-		closebuffer.append(chars);
-		punctbuffer.append(chars);
+	public void leftSquareBracket(int index) {
+		openbuffer.append('[');
+		punctbuffer.append('[');
+	}
+
+	@Override
+	public void leftCurlyBracket(int index) {
+		openbuffer.append('{');
+		punctbuffer.append('{');
+	}
+
+	@Override
+	public void rightParenthesis(int index) {
+		closebuffer.append(')');
+		punctbuffer.append(')');
+	}
+
+	@Override
+	public void rightSquareBracket(int index) {
+		closebuffer.append(']');
+		punctbuffer.append(']');
+	}
+
+	@Override
+	public void rightCurlyBracket(int index) {
+		closebuffer.append('}');
+		punctbuffer.append('}');
 	}
 
 	@Override

@@ -588,15 +588,27 @@ public class TokenProducer {
 					break;
 				}
 				checkPreviousWord();
-				if (cp == 40 || cp == 91 || cp == 123) {
-					// ([{
-					handler.openGroup(rootIndex, cp);
+				// ([{
+				switch (cp) {
+				case 40:
+					handler.leftParenthesis(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
+				case 91:
+					handler.leftSquareBracket(rootIndex);
+					previdx = rootIndex + 1;
+					prevtype = Character.OTHER_PUNCTUATION;
+					break;
+				case 123:
+					handler.leftCurlyBracket(rootIndex);
+					previdx = rootIndex + 1;
+					prevtype = Character.OTHER_PUNCTUATION;
+					break;
+				default:
+					handler.startPunctuation(rootIndex, cp);
+					updatePrev(cp);
 				}
-				handleCharacter(cp);
-				updatePrev(cp);
 				break;
 			case Character.END_PUNCTUATION:
 				if (charCheck.isAllowedCharacter(cp, this)) {
@@ -604,15 +616,27 @@ public class TokenProducer {
 					break;
 				}
 				checkPreviousWord();
-				if (cp == 41 || cp == 93 || cp == 125) {
-					// )]}
-					handler.closeGroup(rootIndex, cp);
+				// )]}
+				switch (cp) {
+				case 41:
+					handler.rightParenthesis(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
+				case 93:
+					handler.rightSquareBracket(rootIndex);
+					previdx = rootIndex + 1;
+					prevtype = Character.OTHER_PUNCTUATION;
+					break;
+				case 125:
+					handler.rightCurlyBracket(rootIndex);
+					previdx = rootIndex + 1;
+					prevtype = Character.OTHER_PUNCTUATION;
+					break;
+				default:
+					handler.endPunctuation(rootIndex, cp);
+					updatePrev(cp);
 				}
-				handleCharacter(cp);
-				updatePrev(cp);
 				break;
 			case Character.OTHER_PUNCTUATION:
 				if (charCheck.isAllowedCharacter(cp, this)) {
