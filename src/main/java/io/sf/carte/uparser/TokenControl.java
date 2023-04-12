@@ -63,7 +63,7 @@ public interface TokenControl {
 	 * 
 	 * @return the {@code TokenHandler}.
 	 */
-	TokenHandler getTokenHandler();
+	TokenHandler2 getTokenHandler();
 
 	/**
 	 * Set a new {@code TokenHandler}.
@@ -71,7 +71,7 @@ public interface TokenControl {
 	 * @param handler
 	 *            the new {@code TokenHandler}.
 	 */
-	void setTokenHandler(TokenHandler handler);
+	void setTokenHandler(TokenHandler2 handler);
 
 	/**
 	 * Disable the handling of all types of comments.

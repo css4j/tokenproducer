@@ -14,5 +14,4 @@
  */
 module io.sf.carte.tokenproducer {
 	exports io.sf.carte.uparser;
-	exports io.sf.carte.uparser.util;
 }

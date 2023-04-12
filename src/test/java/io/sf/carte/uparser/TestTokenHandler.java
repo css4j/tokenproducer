@@ -13,7 +13,7 @@ package io.sf.carte.uparser;
 
 import java.util.LinkedList;
 
-class TestTokenHandler implements TokenHandler {
+class TestTokenHandler implements TokenHandler2 {
 
 	TokenControl control = null;
 	LinkedList<String> words = new LinkedList<String>();

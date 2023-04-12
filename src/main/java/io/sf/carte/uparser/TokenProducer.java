@@ -189,7 +189,7 @@ public class TokenProducer {
 
 	private static final int CHARACTER_PROCESSING_LIMIT_DEFAULT = 0x40000000;
 
-	private TokenHandler handler;
+	private TokenHandler2 handler;
 	private final CharacterCheck charCheck;
 	private boolean handleAllSeparators = true;
 	private boolean acceptNewlineEndingQuote = false;
@@ -203,7 +203,7 @@ public class TokenProducer {
 	 * @param handler
 	 *            the token handler.
 	 */
-	public TokenProducer(TokenHandler handler) {
+	public TokenProducer(TokenHandler2 handler) {
 		this(handler, CHARACTER_PROCESSING_LIMIT_DEFAULT);
 	}
 
@@ -216,7 +216,7 @@ public class TokenProducer {
 	 * @param characterCountLimit
 	 *            the character count limit.
 	 */
-	public TokenProducer(TokenHandler handler, int characterCountLimit) {
+	public TokenProducer(TokenHandler2 handler, int characterCountLimit) {
 		super();
 		this.characterIndexLimit = characterCountLimit;
 		this.handler = handler;
@@ -232,7 +232,7 @@ public class TokenProducer {
 	 * @param charCheck
 	 *            the character checker object.
 	 */
-	public TokenProducer(TokenHandler handler, CharacterCheck charCheck) {
+	public TokenProducer(TokenHandler2 handler, CharacterCheck charCheck) {
 		this(handler, charCheck, CHARACTER_PROCESSING_LIMIT_DEFAULT);
 	}
 
@@ -247,7 +247,7 @@ public class TokenProducer {
 	 * @param characterCountLimit
 	 *            the character count limit.
 	 */
-	public TokenProducer(TokenHandler handler, CharacterCheck charCheck, int characterCountLimit) {
+	public TokenProducer(TokenHandler2 handler, CharacterCheck charCheck, int characterCountLimit) {
 		super();
 		this.handler = handler;
 		this.charCheck = charCheck;
@@ -263,7 +263,7 @@ public class TokenProducer {
 	 * @param allowInWords
 	 *            the array of codepoints allowed in words.
 	 */
-	public TokenProducer(TokenHandler handler, int[] allowInWords) {
+	public TokenProducer(TokenHandler2 handler, int[] allowInWords) {
 		this(handler, allowInWords, CHARACTER_PROCESSING_LIMIT_DEFAULT);
 	}
 
@@ -278,7 +278,7 @@ public class TokenProducer {
 	 * @param characterCountLimit
 	 *            the character count limit.
 	 */
-	public TokenProducer(TokenHandler handler, int[] allowInWords, int characterCountLimit) {
+	public TokenProducer(TokenHandler2 handler, int[] allowInWords, int characterCountLimit) {
 		super();
 		this.handler = handler;
 		charCheck = new WhitelistCharacterCheck(allowInWords);
@@ -292,7 +292,7 @@ public class TokenProducer {
 	 * 
 	 * @param handleAllSeparators
 	 *            if set to <code>true</code>, all separator characters (including consecutive
-	 *            ones) will trigger a {@link TokenHandler#separator(int, int)} method call.
+	 *            ones) will trigger a {@link TokenHandler2#separator(int, int)} method call.
 	 *            Otherwise only single separations between the other types of tokens will be
 	 *            taken into account.
 	 */
@@ -847,12 +847,12 @@ public class TokenProducer {
 			}
 
 			@Override
-			public TokenHandler getTokenHandler() {
+			public TokenHandler2 getTokenHandler() {
 				return TokenProducer.this.handler;
 			}
 
 			@Override
-			public void setTokenHandler(TokenHandler handler) {
+			public void setTokenHandler(TokenHandler2 handler) {
 				TokenProducer.this.handler = handler;
 			}
 

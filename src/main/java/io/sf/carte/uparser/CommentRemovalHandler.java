@@ -11,7 +11,7 @@
 
 package io.sf.carte.uparser;
 
-public class CommentRemovalHandler implements TokenHandler {
+public class CommentRemovalHandler implements TokenHandler2 {
 
 	private final StringBuilder buffer;
 
