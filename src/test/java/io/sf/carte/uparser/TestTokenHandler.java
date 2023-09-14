@@ -16,9 +16,9 @@ import java.util.LinkedList;
 class TestTokenHandler implements TokenHandler2 {
 
 	TokenControl control = null;
-	LinkedList<String> words = new LinkedList<String>();
-	LinkedList<String> escaped = new LinkedList<String>();
-	LinkedList<String> comments = new LinkedList<String>();
+	LinkedList<String> words = new LinkedList<>();
+	LinkedList<String> escaped = new LinkedList<>();
+	LinkedList<String> comments = new LinkedList<>();
 	StringBuilder punctbuffer = new StringBuilder();
 	StringBuilder sepbuffer = new StringBuilder();
 	StringBuilder openbuffer = new StringBuilder();
