@@ -2062,8 +2062,8 @@ public class TokenProducer {
 			 * 
 			 * but the typical use cases for this class involve an array of length two.
 			 */
-			for (int i = 0; i < allowInWords.length; i++) {
-				if (codePoint == allowInWords[i]) {
+			for (int allowInWord : allowInWords) {
+				if (codePoint == allowInWord) {
 					return true;
 				}
 			}
