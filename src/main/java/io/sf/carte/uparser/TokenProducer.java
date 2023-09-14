@@ -746,7 +746,7 @@ public class TokenProducer {
 						prevlinelength++;
 					} else {
 						handler.error(rootIndex, TokenProducer.ERR_UNEXPECTED_CONTROL,
-								"Unexpected: " + Character.toString(codepoint));
+								"Unexpected codepoint: " + Integer.toHexString(codepoint));
 					}
 				}
 			} else if (codepoint == 12) { // FF
@@ -768,7 +768,7 @@ public class TokenProducer {
 				handler.separator(rootIndex, 9);
 			} else if (codepoint < 0x80) {
 				handler.error(rootIndex, TokenProducer.ERR_UNEXPECTED_CONTROL,
-						"Unexpected: " + Character.toString(codepoint));
+						"Unexpected codepoint: " + Integer.toHexString(codepoint));
 			} else {
 				handler.control(rootIndex, codepoint);
 			}
