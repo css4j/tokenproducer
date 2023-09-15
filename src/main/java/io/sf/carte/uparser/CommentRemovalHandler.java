@@ -11,15 +11,45 @@
 
 package io.sf.carte.uparser;
 
+/**
+ * A handler that removes comments.
+ * <p>
+ * Example:
+ * </p>
+ * 
+ * <pre><code>
+ * String removeComments(String text) {
+ *     String[] opening = { "/{@literal *}", "&lt;!--" };
+ *     String[] closing = { "{@literal *}/", "--&gt;" };
+ *     CommentRemovalHandler handler = new CommentRemovalHandler(text.length());
+ *     TokenProducer tp = new TokenProducer(handler);
+ *     try {
+ *         tp.parseMultiComment(new StringReader(text), opening, closing);
+ *     } catch (IOException e) {
+ *     }
+ *     return handler.getBuffer().toString();
+ * }
+ * </code></pre>
+ */
 public class CommentRemovalHandler implements TokenHandler2 {
 
 	private final StringBuilder buffer;
 
+	/**
+	 * Construct the handler with the given initial buffer size.
+	 * 
+	 * @param bufSize the initial buffer size.
+	 */
 	public CommentRemovalHandler(int bufSize) {
 		super();
 		buffer = new StringBuilder(bufSize);
 	}
 
+	/**
+	 * Get the buffer.
+	 * 
+	 * @return the buffer.
+	 */
 	public StringBuilder getBuffer() {
 		return buffer;
 	}

@@ -15,39 +15,39 @@ package io.sf.carte.uparser;
  * A {@link TokenHandler2} that is backwards-compatible with
  * {@code TokenProducer} 1.x.
  * <p>
- * You may consider using {@link TokenHandler2} instead.
+ * You may consider using {@link TokenHandler2} or {@link TokenHandler3} instead.
  * </p>
  */
 public interface TokenHandler extends TokenHandler2 {
 
 	@Override
 	default void leftParenthesis(int index) {
-		openGroup(index, TokenProducer.CHAR_LEFT_PAREN);
+		openGroup(index, TokenProducer3.CHAR_LEFT_PAREN);
 	}
 
 	@Override
 	default void leftSquareBracket(int index) {
-		openGroup(index, TokenProducer.CHAR_LEFT_SQ_BRACKET);
+		openGroup(index, TokenProducer3.CHAR_LEFT_SQ_BRACKET);
 	}
 
 	@Override
 	default void leftCurlyBracket(int index) {
-		openGroup(index, TokenProducer.CHAR_LEFT_CURLY_BRACKET);
+		openGroup(index, TokenProducer3.CHAR_LEFT_CURLY_BRACKET);
 	}
 
 	@Override
 	default void rightParenthesis(int index) {
-		closeGroup(index, TokenProducer.CHAR_RIGHT_PAREN);
+		closeGroup(index, TokenProducer3.CHAR_RIGHT_PAREN);
 	}
 
 	@Override
 	default void rightSquareBracket(int index) {
-		closeGroup(index, TokenProducer.CHAR_RIGHT_SQ_BRACKET);
+		closeGroup(index, TokenProducer3.CHAR_RIGHT_SQ_BRACKET);
 	}
 
 	@Override
 	default void rightCurlyBracket(int index) {
-		closeGroup(index, TokenProducer.CHAR_RIGHT_CURLY_BRACKET);
+		closeGroup(index, TokenProducer3.CHAR_RIGHT_CURLY_BRACKET);
 	}
 
 	/**
