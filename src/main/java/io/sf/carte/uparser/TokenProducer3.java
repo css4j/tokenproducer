@@ -46,8 +46,6 @@ import java.util.Arrays;
  * constructors if you need to process larger files (or want smaller limits
  * being enforced).
  * </p>
- * 
- * @param E the exception that the handler may throw.
  */
 public class TokenProducer3<E extends Exception> {
 
