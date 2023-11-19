@@ -135,6 +135,11 @@ publishing {
 						url = "https://css4j.github.io/LICENSE.txt"
 					}
 				}
+				scm {
+					connection = "scm:git:https://github.com/css4j/tokenproducer.git"
+					developerConnection = "scm:git:git://git@github.com:css4j/tokenproducer.git"
+					url = "https://github.com/css4j/tokenproducer"
+				}
 			}
 		}
 	}
