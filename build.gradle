@@ -13,8 +13,7 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Jazzer
-	testImplementation 'com.code-intelligence:jazzer-junit:0.23.0'
-	testImplementation 'com.code-intelligence:jazzer-api:0.23.0'
+	testImplementation 'com.code-intelligence:jazzer-junit:0.24.0'
 }
 
 repositories {
