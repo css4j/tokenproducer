@@ -85,7 +85,7 @@ tasks.register('fuzzer', Test) {
 }
 
 tasks.register('lineEndingConvCopy', CRLFConvertCopy) {
-	description 'Convert LICENSE.txt to Windows line endings'
+	description = 'Convert LICENSE.txt to Windows line endings'
 	from "$rootDir/LICENSE.txt"
 }
 
