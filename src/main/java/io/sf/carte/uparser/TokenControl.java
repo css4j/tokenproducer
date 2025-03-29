@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2023, Carlos Amengual.
+ Copyright (c) 2017-2025, Carlos Amengual.
 
  Licensed under a BSD-style License. You can find the license here:
  https://css4j.github.io/LICENSE.txt
@@ -59,17 +59,65 @@ public interface TokenControl {
 	int skipNextCodepoint() throws IOException;
 
 	/**
+	 * Get the current content handler.
+	 * 
+	 * @return the {@code ContentHandler}.
+	 */
+	ContentHandler<?> getContentHandler();
+
+	/**
+	 * Set a new {@code ContentHandler}.
+	 * 
+	 * @param handler
+	 *            the new {@code ContentHandler}.
+	 */
+	void setContentHandler(ContentHandler<?> handler);
+
+	/**
+	 * Get the current control handler.
+	 * 
+	 * @return the {@code ControlHandler}.
+	 */
+	ControlHandler<?> getControlHandler();
+
+	/**
+	 * Set a new {@code ControlHandler}.
+	 * 
+	 * @param handler
+	 *            the new {@code ControlHandler}.
+	 */
+	void setControlHandler(ControlHandler<?> handler);
+
+	/**
+	 * Get the current error handler.
+	 * 
+	 * @return the {@code TokenErrorHandler}.
+	 */
+	TokenErrorHandler<?> getErrorHandler();
+
+	/**
+	 * Set a new {@code TokenErrorHandler}.
+	 * 
+	 * @param handler
+	 *            the new {@code TokenErrorHandler}.
+	 */
+	void setErrorHandler(TokenErrorHandler<?> handler);
+
+	/**
 	 * Get the current {@code TokenHandler}.
 	 * 
 	 * @return the {@code TokenHandler}.
+	 * @deprecated See {@link #getContentHandler()}, {@link #getControlHandler()},
+	 *             {@link #getErrorHandler()}
 	 */
+	@Deprecated
 	TokenHandler3<?> getTokenHandler();
 
 	/**
-	 * Set a new {@code TokenHandler}.
+	 * Set all the handlers with a new {@code TokenHandler3}.
 	 * 
 	 * @param handler
-	 *            the new {@code TokenHandler}.
+	 *            the new {@code TokenHandler3}.
 	 */
 	void setTokenHandler(TokenHandler3<?> handler);
 

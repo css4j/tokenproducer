@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2023, Carlos Amengual.
+ Copyright (c) 2017-2025, Carlos Amengual.
 
  Licensed under a BSD-style License. You can find the license here:
  https://css4j.github.io/LICENSE.txt
@@ -73,6 +73,11 @@ public class TokenProducer3<E extends Exception> {
 	 * %
 	 */
 	public static final int CHAR_PERCENT_SIGN = 37;
+
+	/**
+	 * &amp;
+	 */
+	public static final int CHAR_AMPERSAND = 38;
 
 	/**
 	 * (
@@ -191,7 +196,10 @@ public class TokenProducer3<E extends Exception> {
 
 	private static final int CHARACTER_PROCESSING_LIMIT_DEFAULT = 0x40000000;
 
-	private TokenHandler3<E> handler;
+	private ContentHandler<E> handler;
+	private ControlHandler<E> controlHandler;
+	private TokenErrorHandler<E> errorHandler;
+
 	private final CharacterCheck charCheck;
 	private boolean handleAllSeparators = true;
 	private boolean acceptNewlineEndingQuote = false;
@@ -222,6 +230,8 @@ public class TokenProducer3<E extends Exception> {
 		super();
 		this.characterIndexLimit = characterCountLimit;
 		this.handler = handler;
+		this.controlHandler = handler;
+		this.errorHandler = handler;
 		this.charCheck = new DisallowCharacterCheck();
 	}
 
@@ -252,6 +262,8 @@ public class TokenProducer3<E extends Exception> {
 	public TokenProducer3(TokenHandler3<E> handler, CharacterCheck charCheck, int characterCountLimit) {
 		super();
 		this.handler = handler;
+		this.controlHandler = handler;
+		this.errorHandler = handler;
 		this.charCheck = charCheck;
 		this.characterIndexLimit = characterCountLimit;
 	}
@@ -276,15 +288,63 @@ public class TokenProducer3<E extends Exception> {
 	 * @param handler
 	 *            the token handler.
 	 * @param allowInWords
-	 *            the array of codepoints allowed in words.
+	 *            the sorted array of codepoints allowed in words.
 	 * @param characterCountLimit
 	 *            the character count limit.
 	 */
 	public TokenProducer3(TokenHandler3<E> handler, int[] allowInWords, int characterCountLimit) {
 		super();
 		this.handler = handler;
-		charCheck = new WhitelistCharacterCheck(allowInWords);
+		this.controlHandler = handler;
+		this.errorHandler = handler;
+		if (allowInWords.length < 4) {
+			charCheck = new SmallWhitelistCharacterCheck(allowInWords);
+		} else {
+			charCheck = new WhitelistCharacterCheck(allowInWords);
+		}
 		this.characterIndexLimit = characterCountLimit;
+	}
+
+	/**
+	 * Instantiate a <code>TokenProducer</code> object with the given
+	 * <code>CharacterCheck</code> and character count limit.
+	 * 
+	 * @param charCheck
+	 *            the character checker object.
+	 * @param characterCountLimit
+	 *            the character count limit.
+	 */
+	public TokenProducer3(CharacterCheck charCheck, int characterCountLimit) {
+		super();
+		this.charCheck = charCheck;
+		this.characterIndexLimit = characterCountLimit;
+	}
+
+	/**
+	 * Set the content handler.
+	 * 
+	 * @param handler the handler.
+	 */
+	public void setContentHandler(ContentHandler<E> handler) {
+		this.handler = handler;
+	}
+
+	/**
+	 * Set the control handler.
+	 * 
+	 * @param controlHandler the handler.
+	 */
+	public void setControlHandler(ControlHandler<E> controlHandler) {
+		this.controlHandler = controlHandler;
+	}
+
+	/**
+	 * Set the content handler.
+	 * 
+	 * @param errorHandler the handler.
+	 */
+	public void setErrorHandler(TokenErrorHandler<E> errorHandler) {
+		this.errorHandler = errorHandler;
 	}
 
 	/**
@@ -738,7 +798,7 @@ public class TokenProducer3<E extends Exception> {
 
 		void handleControl(int codepoint) throws E {
 			if (externalControlHandling) {
-				handler.control(rootIndex, codepoint);
+				controlHandler.control(rootIndex, codepoint);
 				return;
 			}
 			if (codepoint == 10) { // LF \n
@@ -751,7 +811,7 @@ public class TokenProducer3<E extends Exception> {
 					if (rootIndex - prevlinelength == 1) {
 						prevlinelength++;
 					} else {
-						handler.error(rootIndex, TokenProducer3.ERR_UNEXPECTED_CONTROL,
+						errorHandler.error(rootIndex, TokenProducer3.ERR_UNEXPECTED_CONTROL,
 								"Unexpected codepoint: " + Integer.toHexString(codepoint));
 					}
 				}
@@ -773,10 +833,10 @@ public class TokenProducer3<E extends Exception> {
 			} else if (codepoint == 9) { // TAB
 				handler.separator(rootIndex, 9);
 			} else if (codepoint < 0x80) {
-				handler.error(rootIndex, TokenProducer3.ERR_UNEXPECTED_CONTROL,
+				errorHandler.error(rootIndex, TokenProducer3.ERR_UNEXPECTED_CONTROL,
 						"Unexpected codepoint: " + Integer.toHexString(codepoint));
 			} else {
-				handler.control(rootIndex, codepoint);
+				controlHandler.control(rootIndex, codepoint);
 			}
 		}
 
@@ -808,7 +868,7 @@ public class TokenProducer3<E extends Exception> {
 			int commentprevtype = 0;
 
 			void parse() throws E, IOException {
-				handler.tokenStart(this);
+				controlHandler.tokenStart(this);
 			}
 
 			/**
@@ -853,14 +913,50 @@ public class TokenProducer3<E extends Exception> {
 			}
 
 			@Override
+			public ContentHandler<?> getContentHandler() {
+				return (ContentHandler<?>) TokenProducer3.this.handler;
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void setContentHandler(ContentHandler<?> handler) {
+				TokenProducer3.this.handler = (ContentHandler<E>) handler;
+			}
+
+			@Override
+			public ControlHandler<?> getControlHandler() {
+				return (ControlHandler<?>) TokenProducer3.this.controlHandler;
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void setControlHandler(ControlHandler<?> handler) {
+				TokenProducer3.this.controlHandler = (ControlHandler<E>) handler;
+			}
+
+			@Override
+			public TokenErrorHandler<?> getErrorHandler() {
+				return (TokenErrorHandler<?>) TokenProducer3.this.errorHandler;
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void setErrorHandler(TokenErrorHandler<?> handler) {
+				TokenProducer3.this.errorHandler = (TokenErrorHandler<E>) handler;
+			}
+
+			@Override
 			public TokenHandler3<E> getTokenHandler() {
-				return TokenProducer3.this.handler;
+				return (TokenHandler3<E>) TokenProducer3.this.handler;
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public void setTokenHandler(TokenHandler3<?> handler) {
-				TokenProducer3.this.handler = (TokenHandler3<E>) handler;
+				TokenHandler3<E> handler3 = (TokenHandler3<E>) handler;
+				TokenProducer3.this.handler = handler3;
+				TokenProducer3.this.controlHandler = handler3;
+				TokenProducer3.this.errorHandler = handler3;
 			}
 
 			@Override
@@ -1308,7 +1404,7 @@ public class TokenProducer3<E extends Exception> {
 						if (prevcp != 92) {
 							// not \ backslash
 							if (cp != 10 || !lastCpEscaped13) {
-								handler.error(idx, ERR_UNEXPECTED_END_QUOTED, buffer);
+								errorHandler.error(idx, ERR_UNEXPECTED_END_QUOTED, buffer);
 								rootIndex = idx;
 								handleControl(cp);
 								if (!acceptNewlineEndingQuote) {
@@ -1320,7 +1416,7 @@ public class TokenProducer3<E extends Exception> {
 						} else {
 							// trim last backslash
 							buffer.setLength(buffer.length() - 1);
-							handler.quotedNewlineChar(idx, cp);
+							controlHandler.quotedNewlineChar(idx, cp);
 						}
 						if (!lastCpEscaped13) {
 							buffer.append('\n');
@@ -1365,7 +1461,7 @@ public class TokenProducer3<E extends Exception> {
 			if (endIndex > string.length()) {
 				endIndex = string.length();
 			}
-			handler.error(index, errCode, string.substring(beginIndex, endIndex));
+			errorHandler.error(index, errCode, string.substring(beginIndex, endIndex));
 		}
 
 		class StringNoCommentManager extends NoCommentManager {
@@ -1477,7 +1573,7 @@ public class TokenProducer3<E extends Exception> {
 					int cp = string.codePointAt(idx);
 					if (cp == 10 || cp == 12 || cp == 13) {
 						if (externalControlHandling && (cp != 10 || !lastCp13)) {
-							handler.control(idx, cp);
+							controlHandler.control(idx, cp);
 						}
 						lastCp13 = cp == 13;
 					} else {
@@ -1589,7 +1685,7 @@ public class TokenProducer3<E extends Exception> {
 						if (prevcp != 92) {
 							// not \ backslash
 							if (ncp != 10 || !lastCpEscaped13) {
-								handler.error(rootIndex, ERR_UNEXPECTED_END_QUOTED, buffer);
+								errorHandler.error(rootIndex, ERR_UNEXPECTED_END_QUOTED, buffer);
 								handleControl(ncp);
 								String s;
 								if (!acceptNewlineEndingQuote) {
@@ -1603,7 +1699,7 @@ public class TokenProducer3<E extends Exception> {
 						} else {
 							// trim last backslash
 							buffer.setLength(buffer.length() - 1);
-							handler.quotedNewlineChar(idx, ncp);
+							controlHandler.quotedNewlineChar(idx, ncp);
 						}
 						if (!lastCpEscaped13) {
 							buffer.append('\n');
@@ -1653,7 +1749,7 @@ public class TokenProducer3<E extends Exception> {
 
 		@Override
 		protected void error(int index, byte errCode) throws E {
-			handler.error(index, errCode, buffer);
+			errorHandler.error(index, errCode, buffer);
 		}
 
 	}
@@ -1798,7 +1894,7 @@ public class TokenProducer3<E extends Exception> {
 					boolean isCp10;
 					if (isCp10 = ncp == 10 || ncp == 12 || ncp == 13) {
 						if (externalControlHandling && (ncp != 10 || !lastCp13)) {
-							handler.control(rootIndex - 1, ncp);
+							controlHandler.control(rootIndex - 1, ncp);
 						}
 						lastCp13 = ncp == 13;
 						if (isCp10) {
@@ -1965,7 +2061,7 @@ public class TokenProducer3<E extends Exception> {
 					boolean isCp10;
 					if (isCp10 = ncp == 10 || ncp == 12 || ncp == 13) {
 						if (externalControlHandling && (ncp != 10 || !lastCp13)) {
-							handler.control(rootIndex - 1, ncp);
+							controlHandler.control(rootIndex - 1, ncp);
 						}
 						lastCp13 = ncp == 13;
 						if (isCp10) {
@@ -2048,35 +2144,6 @@ public class TokenProducer3<E extends Exception> {
 		@Override
 		public boolean isAllowedCharacter(int codePoint,
 				SequenceParser<? extends Exception> parser) {
-			return false;
-		}
-
-	}
-
-	static class WhitelistCharacterCheck implements CharacterCheck {
-
-		private final int[] allowInWords;
-
-		WhitelistCharacterCheck(int[] allowInWords) {
-			super();
-			this.allowInWords = allowInWords;
-		}
-
-		@Override
-		public boolean isAllowedCharacter(int codePoint,
-				SequenceParser<? extends Exception> parser) {
-			/*
-			 * In general, it would be more efficient to test for:
-			 * 
-			 *   Arrays.binarySearch(allowInWords, codePoint) >= 0
-			 * 
-			 * but the typical use cases for this class involve an array of length two.
-			 */
-			for (int allowInWord : allowInWords) {
-				if (codePoint == allowInWord) {
-					return true;
-				}
-			}
 			return false;
 		}
 

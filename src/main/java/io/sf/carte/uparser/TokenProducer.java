@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2023, Carlos Amengual.
+ Copyright (c) 2017-2025, Carlos Amengual.
 
  Licensed under a BSD-style License. You can find the license here:
  https://css4j.github.io/LICENSE.txt
@@ -129,6 +129,19 @@ public class TokenProducer extends TokenProducer3<RuntimeException> {
 	 */
 	public TokenProducer(TokenHandler2 handler, int[] allowInWords, int characterCountLimit) {
 		super(handler, allowInWords, characterCountLimit);
+	}
+
+	/**
+	 * Instantiate a <code>TokenProducer</code> object with the given
+	 * <code>CharacterCheck</code> and character count limit.
+	 * 
+	 * @param charCheck
+	 *            the character checker object.
+	 * @param characterCountLimit
+	 *            the character count limit.
+	 */
+	public TokenProducer(CharacterCheck charCheck, int characterCountLimit) {
+		super(charCheck, characterCountLimit);
 	}
 
 }
