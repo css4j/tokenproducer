@@ -104,14 +104,22 @@ public interface TokenControl {
 	void setErrorHandler(TokenErrorHandler<?> handler);
 
 	/**
-	 * Get the current {@code TokenHandler}.
+	 * Get the current content handler, assuming that it implements the
+	 * {@code TokenHandler3} interface.
+	 * <p>
+	 * This method is present only for backwards compatibility. Please avoid it, as
+	 * the content handler may or may not implement the legacy {@code TokenHandler3}
+	 * interface.
+	 * </p>
 	 * 
 	 * @return the {@code TokenHandler}.
 	 * @deprecated See {@link #getContentHandler()}, {@link #getControlHandler()},
 	 *             {@link #getErrorHandler()}
 	 */
 	@Deprecated
-	TokenHandler3<?> getTokenHandler();
+	default TokenHandler3<?> getTokenHandler() {
+		return (TokenHandler3<?>) getContentHandler();
+	}
 
 	/**
 	 * Set all the handlers with a new {@code TokenHandler3}.
