@@ -656,17 +656,17 @@ public class TokenProducer3<E extends Exception> {
 				checkPreviousWord();
 				// ([{
 				switch (cp) {
-				case 40:
+				case CHAR_LEFT_PAREN:
 					handler.leftParenthesis(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
-				case 91:
+				case CHAR_LEFT_SQ_BRACKET:
 					handler.leftSquareBracket(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
-				case 123:
+				case CHAR_LEFT_CURLY_BRACKET:
 					handler.leftCurlyBracket(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
@@ -684,17 +684,17 @@ public class TokenProducer3<E extends Exception> {
 				checkPreviousWord();
 				// )]}
 				switch (cp) {
-				case 41:
+				case CHAR_RIGHT_PAREN:
 					handler.rightParenthesis(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
-				case 93:
+				case CHAR_RIGHT_SQ_BRACKET:
 					handler.rightSquareBracket(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
 					break;
-				case 125:
+				case CHAR_RIGHT_CURLY_BRACKET:
 					handler.rightCurlyBracket(rootIndex);
 					previdx = rootIndex + 1;
 					prevtype = Character.OTHER_PUNCTUATION;
