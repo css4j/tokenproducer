@@ -95,6 +95,20 @@ tasks.register('fuzzer', Test) {
 	}
 }
 
+tasks.register('testOn8', Test) {
+	description = 'Runs tests on Java 8'
+	dependsOn classes
+	testClassesDirs = testing.suites.test.sources.output.classesDirs
+	classpath = testing.suites.test.sources.runtimeClasspath
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
+
+	useJUnitPlatform() {
+		excludeTags 'Fuzz'
+	}
+}
+
 tasks.register('lineEndingConvCopy', CRLFConvertCopy) {
 	description = 'Convert LICENSE.txt to Windows line endings'
 	from "$rootDir/LICENSE.txt"
