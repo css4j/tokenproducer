@@ -914,7 +914,7 @@ public class TokenProducer3<E extends Exception> {
 
 			@Override
 			public ContentHandler<?> getContentHandler() {
-				return (ContentHandler<?>) TokenProducer3.this.handler;
+				return TokenProducer3.this.handler;
 			}
 
 			@SuppressWarnings("unchecked")
@@ -925,7 +925,7 @@ public class TokenProducer3<E extends Exception> {
 
 			@Override
 			public ControlHandler<?> getControlHandler() {
-				return (ControlHandler<?>) TokenProducer3.this.controlHandler;
+				return TokenProducer3.this.controlHandler;
 			}
 
 			@SuppressWarnings("unchecked")
@@ -936,7 +936,7 @@ public class TokenProducer3<E extends Exception> {
 
 			@Override
 			public TokenErrorHandler<?> getErrorHandler() {
-				return (TokenErrorHandler<?>) TokenProducer3.this.errorHandler;
+				return TokenProducer3.this.errorHandler;
 			}
 
 			@SuppressWarnings("unchecked")
