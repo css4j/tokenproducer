@@ -12,6 +12,7 @@
 plugins {
 	id 'java-library'
 	id 'maven-publish'
+	id 'checkstyle'
 }
 
 group = 'io.sf.carte'
@@ -43,6 +44,10 @@ test {
 	useJUnitPlatform() {
 		excludeTags 'Fuzz'
 	}
+}
+
+checkstyle {
+	toolVersion = '10.25.0'
 }
 
 tasks.compileJava {
