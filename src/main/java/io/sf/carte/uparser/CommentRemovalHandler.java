@@ -41,8 +41,17 @@ public class CommentRemovalHandler implements TokenHandler2 {
 	 * @param bufSize the initial buffer size.
 	 */
 	public CommentRemovalHandler(int bufSize) {
+		this(new StringBuilder(bufSize));
+	}
+
+	/**
+	 * Construct the handler with the given buffer.
+	 * 
+	 * @param bufSize the initial buffer size.
+	 */
+	public CommentRemovalHandler(StringBuilder buffer) {
 		super();
-		buffer = new StringBuilder(bufSize);
+		this.buffer = buffer;
 	}
 
 	/**
