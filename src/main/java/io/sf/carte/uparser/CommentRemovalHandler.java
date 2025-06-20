@@ -35,6 +35,8 @@ public class CommentRemovalHandler implements TokenHandler2 {
 
 	private final StringBuilder buffer;
 
+	private int prevcp;
+
 	/**
 	 * Construct the handler with the given initial buffer size.
 	 * 
@@ -63,6 +65,28 @@ public class CommentRemovalHandler implements TokenHandler2 {
 		return buffer;
 	}
 
+	/**
+	 * Get the codepoint that was last processed.
+	 * <p>
+	 * If a character sequence was last processed it returns {@code 65}, and
+	 * {@code 32} for a separator or a control character.
+	 * </p>
+	 * 
+	 * @return the codepoint;
+	 */
+	protected int getPreviousCodepoint() {
+		return prevcp;
+	}
+
+	/**
+	 * Set the codepoint that was last processed.
+	 * 
+	 * @param codePoint the codepoint.
+	 */
+	protected void setPreviousCodepoint(int codePoint) {
+		prevcp = codePoint;
+	}
+
 	@Override
 	public void tokenStart(TokenControl control) {
 	}
@@ -70,11 +94,13 @@ public class CommentRemovalHandler implements TokenHandler2 {
 	@Override
 	public void word(int index, CharSequence word) {
 		buffer.append(word);
+		prevcp = 65;
 	}
 
 	@Override
 	public void separator(int index, int codePoint) {
 		buffer.appendCodePoint(codePoint);
+		prevcp = 32;
 	}
 
 	@Override
@@ -83,6 +109,7 @@ public class CommentRemovalHandler implements TokenHandler2 {
 		buffer.append(quote);
 		buffer.append(quoted);
 		buffer.append(quote);
+		prevcp = quoteCp;
 	}
 
 	@Override
@@ -93,55 +120,69 @@ public class CommentRemovalHandler implements TokenHandler2 {
 	@Override
 	public void quotedNewlineChar(int index, int codePoint) {
 		buffer.appendCodePoint(codePoint);
+		prevcp = 32;
 	}
 
 	@Override
 	public void leftParenthesis(int index) {
 		buffer.append('(');
+		prevcp = '(';
 	}
 
 	@Override
 	public void leftSquareBracket(int index) {
 		buffer.append('[');
+		prevcp = '[';
 	}
 
 	@Override
 	public void leftCurlyBracket(int index) {
 		buffer.append('{');
+		prevcp = '{';
 	}
 
 	@Override
 	public void rightParenthesis(int index) {
 		buffer.append(')');
+		prevcp = ')';
 	}
 
 	@Override
 	public void rightSquareBracket(int index) {
 		buffer.append(']');
+		prevcp = ']';
 	}
 
 	@Override
 	public void rightCurlyBracket(int index) {
 		buffer.append('}');
+		prevcp = '}';
 	}
 
 	@Override
 	public void character(int index, int codePoint) {
 		buffer.appendCodePoint(codePoint);
+		prevcp = codePoint;
 	}
 
 	@Override
 	public void escaped(int index, int codePoint) {
 		buffer.append('\\').appendCodePoint(codePoint);
+		prevcp = codePoint;
 	}
 
 	@Override
 	public void control(int index, int codePoint) {
 		buffer.appendCodePoint(codePoint);
+		prevcp = 32;
 	}
 
 	@Override
 	public void commented(int index, int commentType, String comment) {
+		if (prevcp != 32) {
+			buffer.append(' ');
+			prevcp = 32;
+		}
 	}
 
 	@Override

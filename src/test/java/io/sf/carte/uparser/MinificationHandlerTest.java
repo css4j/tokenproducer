@@ -18,7 +18,7 @@ import java.io.StringReader;
 
 import org.junit.jupiter.api.Test;
 
-public class CommentRemovalHandlerTest {
+public class MinificationHandlerTest {
 
 	@Test
 	public void testParse() {
@@ -28,15 +28,16 @@ public class CommentRemovalHandlerTest {
 
 		String removed = removeComments(text);
 
-		assertEquals("<html> <head>\t<style> \\1 </style>\n</head><body>*<p>\"hi\" 'ho\t' ()[]{}</p>"
+		assertEquals("<html> <head> <style> \\1 </style> </head><body>*<p>\"hi\" 'ho\t' ()[]{}</p>"
 				+ "</body></html>", removed);
 	}
 
 	private String removeComments(String text) {
 		final String[] opening = { "/*", "<!--" };
 		final String[] closing = { "*/", "-->" };
-		CommentRemovalHandler handler = new CommentRemovalHandler(text.length());
+		MinificationHandler handler = new MinificationHandler(text.length());
 		TokenProducer tp = new TokenProducer(handler);
+		tp.setHandleAllSeparators(false);
 		try {
 			tp.parseMultiComment(new StringReader(text), opening, closing);
 		} catch (IOException e) {
