@@ -40,10 +40,10 @@ cd /path/to/tokenproducer
 ```
 
 5) Use `changes.sh <new-version>` to create a `CHANGES.txt` file with the
-changes from the latest tag. For example if you are releasing `3.1.1`:
+changes from the latest tag. For example if you are releasing `3.2.1`:
 
 ```shell
-./changes.sh 3.1.1
+./changes.sh 3.2.1
 ```
 
 Edit the resulting `CHANGES.txt` as convenient, to use it as the basis for the
@@ -83,7 +83,7 @@ mv /path/to/css4j-dist/build/docs/javadoc/* /path/to/css4j.github.io/api/latest
 ```
 
 If the changes to the `css4j.github.io` repo look correct, commit them with a
-description like "Latest modular Javadocs after tokenproducer 3.1.1" and push.
+description like "Latest modular Javadocs after tokenproducer 3.2.1" and push.
 
 Check whether the ["Examples" CI](https://github.com/css4j/css4j.github.io/actions/workflows/examples.yml)
 triggered by that commit to the `css4j.github.io` repository completed
@@ -94,8 +94,8 @@ for example.
 
 ```shell
 cd /path/to/tokenproducer
-git tag -s v3.1.1 -m "Release 3.1.1"
-git push origin v3.1.1
+git tag -s v3.2.1 -m "Release 3.2.1"
+git push origin v3.2.1
 ```
 
 or `git tag -a` instead of `-s` if you do not plan to sign the tag. But it is
