@@ -1466,6 +1466,8 @@ public class TokenProducer3<E extends Exception> {
 
 		class StringNoCommentManager extends NoCommentManager {
 
+			private int markIndex = 0;
+
 			@Override
 			void parse() throws IOException, E {
 				super.parse();
@@ -1486,9 +1488,26 @@ public class TokenProducer3<E extends Exception> {
 				handler.endOfStream(len);
 			}
 
+			@Override
+			public boolean markStreamSupported() {
+				return true;
+			}
+
+			@Override
+			public void markStream(int readAheadLimit) {
+				markIndex = rootIndex;
+			}
+
+			@Override
+			public void resetStream() {
+				rootIndex = markIndex;
+			}
+
 		}
 
 		class StringSingleCommentManager extends SingleCommentManager {
+
+			private int markIndex = 0;
 
 			StringSingleCommentManager(String start, String end) {
 				super(start, end);
@@ -1610,6 +1629,21 @@ public class TokenProducer3<E extends Exception> {
 				} else {
 					handler.character(previdx, string.charAt(previdx));
 				}
+			}
+
+			@Override
+			public boolean markStreamSupported() {
+				return true;
+			}
+
+			@Override
+			public void markStream(int readAheadLimit) {
+				markIndex = rootIndex;
+			}
+
+			@Override
+			public void resetStream() {
+				rootIndex = markIndex;
 			}
 
 		}
@@ -1799,6 +1833,21 @@ public class TokenProducer3<E extends Exception> {
 				handler.endOfStream(rootIndex);
 			}
 
+			@Override
+			public boolean markStreamSupported() {
+				return ReaderParser.this.reader.markSupported();
+			}
+
+			@Override
+			public void markStream(int readAheadLimit) throws IOException {
+				ReaderParser.this.reader.mark(readAheadLimit);
+			}
+
+			@Override
+			public void resetStream() throws IOException {
+				ReaderParser.this.reader.reset();
+			}
+
 		}
 
 		private class ReaderSingleCommentManager extends SingleCommentManager {
@@ -1950,7 +1999,23 @@ public class TokenProducer3<E extends Exception> {
 				return true;
 			}
 
+			@Override
+			public boolean markStreamSupported() {
+				return ReaderParser.this.reader.markSupported();
+			}
+
+			@Override
+			public void markStream(int readAheadLimit) throws IOException {
+				ReaderParser.this.reader.mark(readAheadLimit);
+			}
+
+			@Override
+			public void resetStream() throws IOException {
+				ReaderParser.this.reader.reset();
+			}
+
 		}
+
 	}
 
 	private class ReaderMultiCommentParser extends AbstractReaderParser {
@@ -2116,7 +2181,24 @@ public class TokenProducer3<E extends Exception> {
 				}
 				return true;
 			}
+
+			@Override
+			public boolean markStreamSupported() {
+				return ReaderMultiCommentParser.this.reader.markSupported();
+			}
+
+			@Override
+			public void markStream(int readAheadLimit) throws IOException {
+				ReaderMultiCommentParser.this.reader.mark(readAheadLimit);
+			}
+
+			@Override
+			public void resetStream() throws IOException {
+				ReaderMultiCommentParser.this.reader.reset();
+			}
+
 		}
+
 	}
 
 	/**

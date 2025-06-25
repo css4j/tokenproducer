@@ -59,6 +59,41 @@ public interface TokenControl {
 	int skipNextCodepoint() throws IOException;
 
 	/**
+	 * Tells whether the associated stream supports the {@code mark()} operation.
+	 * 
+	 * @return {@code true} if the associated stream supports the {@code mark()}
+	 *         operation.
+	 */
+	default boolean markStreamSupported() {
+		return false;
+	}
+
+	/**
+	 * Calls {@link java.io.Reader#mark(int) mark(int)} on the stream reader.
+	 * 
+	 * @param readAheadLimit Limit on the number of characters that may be read
+	 *                       while still preserving the mark. After reading this
+	 *                       many characters, attempting to reset the stream may
+	 *                       fail.
+	 * @throws IOException if the stream does not support mark(), or if some other
+	 *                     I/O error occurs.
+	 */
+	default void markStream(int readAheadLimit) throws IOException {
+		throw new IOException("mark() not supported.");
+	}
+
+	/**
+	 * Calls {@link java.io.Reader#reset() reset()} on the stream reader.
+	 * 
+	 * @throws IOException if the stream has not been marked, or if the mark has
+	 *                     been invalidated, or if the stream does not support
+	 *                     reset(), or if some other I/O error occurs.
+	 */
+	default void resetStream() throws IOException {
+		throw new IOException("reset() not supported.");
+	}
+
+	/**
 	 * Get the current content handler.
 	 * 
 	 * @return the {@code ContentHandler}.
