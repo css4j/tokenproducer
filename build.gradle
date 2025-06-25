@@ -22,7 +22,7 @@ description = 'tokenproducer'
 version = '3.3-SNAPSHOT'
 
 dependencies {
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Jazzer
 	testImplementation 'com.code-intelligence:jazzer-junit:0.24.0'
@@ -47,7 +47,7 @@ test {
 }
 
 checkstyle {
-	toolVersion = '10.25.0'
+	toolVersion = '10.26.0'
 }
 
 tasks.compileJava {
