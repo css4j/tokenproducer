@@ -19,7 +19,7 @@ group = 'io.sf.carte'
 
 description = 'tokenproducer'
 
-version = '3.3-SNAPSHOT'
+version = '3.3'
 
 dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.2'
