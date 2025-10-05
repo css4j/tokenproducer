@@ -7,11 +7,3 @@ updates:
       day: "tuesday"
     assignees:
       - "carlosame"
-
-  - package-ecosystem: "gradle"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "tuesday"
-    assignees:
-      - "carlosame"
