@@ -62,7 +62,7 @@ cd /path/to/tokenproducer
 ```
 
 8) Produce the necessary directory indexes in the local copy of the bare-bones
-Maven repository using [`genindex.py -t`](https://gist.github.com/carlosame/bd5b68c4eb8e0817d9beb1dcfb4de43d):
+Maven repository using [`genindex.py`](https://raw.githubusercontent.com/carlosame/index-html-generator/refs/heads/main/genindex.py):
 
 ```shell
 cd /path/to/css4j.github.io/maven/io/sf/carte
