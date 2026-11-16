@@ -66,16 +66,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up modular JDK
-        uses: actions/setup-java@v6
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       - name: Set up Java 8
         uses: actions/setup-java@v6
         with:
           java-version: '8'
+          distribution: 'temurin'
+
+      # This overwrites the settings.xml so must be the last setup-java
+      - name: Set up modular JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
           distribution: 'temurin'
 
       # Run tests with Java 8
